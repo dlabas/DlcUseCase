@@ -1,0 +1,75 @@
+<?php
+$renderElements = true;
+
+if ((isset($this->renderButtons) && $this->renderButtons)) {
+    $renderButtons = true;
+} elseif((isset($this->renderButtonsOnly) && $this->renderButtonsOnly)) {
+    $renderButtons  = true;
+    $renderElements = false;
+} else {
+    $renderButtons = false;
+}
+?><?php foreach ($this->elements as $element): ?>
+    
+    <?php
+    $errorClass = count($element->getMessages()) > 0 ? ' error' : '';
+    switch (get_class($element)) {
+        case 'DlcDoctrine\Form\Element\ObjectSelect':
+        case 'DoctrineModule\Form\Element\ObjectSelect':
+        case 'Zend\Form\Element\Select':
+            if ($renderElements) {
+            ?>
+            <div class="control-group<?php echo $errorClass ?>">
+                <label class="control-label" for="inputEmail"><?php echo $element->getLabel() ?></label>
+                <div class="controls">
+                    <?php
+                        $element->setAttribute('id', 'input' . $element->getLabel());
+                        echo $this->formElement($element);
+                    ?>
+                </div>
+            </div>
+            <?php
+            }
+            break;
+        case 'Zend\Form\Element\Text':
+        case 'Zend\Form\Element\Textarea':
+            if ($renderElements) {
+            ?>
+            <div class="control-group<?php echo $errorClass ?>">
+                <label class="control-label" for="inputEmail"><?php echo $element->getLabel() ?></label>
+                <div class="controls">
+                    <?php
+                        $element->setAttribute('id', 'input' . $element->getLabel());
+                        $element->setAttribute('placeholder', $element->getLabel());
+                        echo $this->formElement($element);
+                    ?>
+                </div>
+            </div>
+            <?php
+            }
+            break;
+        case 'Zend\Form\Element\Csrf':
+        case 'Zend\Form\Element\Hidden':
+            if ($renderElements) {
+                echo $this->formElement($element);
+            }
+            break;
+        case 'Zend\Form\Element\Submit':
+            if ($renderButtons) {
+            ?>
+            <div class="control-group<?php echo $errorClass ?>">
+                <div class="controls">
+                    <!-- button type="submit" class="btn">Sign in</button-->
+                    <?php echo $this->formElement($element);?>
+                </div>
+            </div>
+            <?php
+            }
+            break;
+        default:
+            echo 'unkown form type "' . get_class($element) . '" <br />';
+            break;
+    }
+    ?>
+
+<?php endforeach; ?>

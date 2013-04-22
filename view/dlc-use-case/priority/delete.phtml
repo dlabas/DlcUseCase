@@ -1,0 +1,18 @@
+<?php 
+$titles = array(
+    array('label' => 'Use Case', 'href' => $this->url('dlcusecase', array())),
+    array('label' => 'Priority', 'href' => $this->url('dlcusecase/priority', array())),
+    //array('label' => 'Delete', 'href' => $this->url('dlcusecase/priority/delete', array())),
+);
+
+$actions = array(
+    //array('label' => 'Add new', 'icon' => 'plus', 'href' => $this->url('dlcusecase/priority/add', array())),
+);
+
+echo $this->partial('dlc-use-case/partials/header.phtml', array(
+    'title'   => $titles,
+    'image'   => '/img/no_thumbnail.png',
+    'actions' => $actions
+));
+?>
+

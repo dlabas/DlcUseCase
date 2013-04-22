@@ -1,0 +1,38 @@
+<?php
+$errorClass = '';
+$collectionDivId = $this->formCollectionElement->getName();
+//\Zend\Debug\Debug::dump($this->formCollectionElement, ' in ' . __FILE__);
+
+
+?>
+
+
+
+<div class="control-group<?php echo $errorClass ?>">
+                <label class="control-label" for="inputEmail">
+                    <?php echo $this->formCollectionElement->getLabel() ?>
+                    <a href="#" onclick="return add_<?php echo $collectionDivId ?>()" title="Add <?php echo $this->formCollectionElement->getLabel() ?>"><i class="icon-plus-sign"></i></a> 
+                </label>
+                <div class="controls" id="<?php echo $collectionDivId ?>">
+                    <?php
+                        $this->formCollectionElement->setLabel('');
+                        //\Zend\Debug\Debug::dump($this->formCollectionElement->getName(), '$this->formCollection($this->formCollectionElement) in ' . __FILE__);
+                        $html = $this->formCollection($this->formCollectionElement, true);
+                        $html = str_replace('</select><select>', '</select><br /><select>', $html);
+                        echo $html;
+                    ?>
+                </div>
+            </div>
+
+<script>
+    function add_<?php echo $collectionDivId ?>() {
+        var currentCount = $('#<?php echo $collectionDivId ?> > select').length;
+        var template = $currentCount = $('#<?php echo $collectionDivId ?> > span').data('template');
+        template = template.replace(/__index__/g, currentCount);
+
+        $('#<?php echo $collectionDivId ?>').append('<br />');
+    	$('#<?php echo $collectionDivId ?>').append(template);
+    	
+        return false;
+    }
+</script>

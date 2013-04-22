@@ -1,0 +1,76 @@
+<?php 
+$titles = array(
+    array('label' => 'Use Case', 'href' => $this->url('dlcusecase', array())),
+    array('label' => 'Priority', 'href' => $this->url('dlcusecase/priority', array())),
+);
+
+$actions = array(
+    array('label' => 'Add new', 'icon' => 'plus', 'href' => $this->url('dlcusecase/priority/add', array())),
+);
+
+// Render module page header 
+echo $this->partial('dlc-use-case/partials/header.phtml', array(
+    'title'   => $titles,
+    'image'   => '/img/no_thumbnail.png',
+    'actions' => $actions
+));
+
+// Render searchbar
+echo $this->partial('dlc-use-case/partials/searchbar.phtml', array(
+    'route' => 'dlcusecase/priority',
+    'query' => $this->query,
+    'actions' => $actions,
+));
+
+
+// Define properties for entity table
+$displayProperties = array(
+    '#'              => 'id',
+    'Name'           => 'name',
+    '<!--ACTIONS-->' => function($entity, $view) {
+        $html = '<a href="' . $view->url('dlcusecase/priority/show', array('id' => $entity->getId())) . '" title="Show ' . $view->escapeHtml($entity->getName()) . '">'
+              .     '<i class="icon-eye-open"></i>'
+              . '</a>'
+              . '&nbsp;'
+              . '<a href="' . $view->url('dlcusecase/priority/edit', array('id' => $entity->getId())) . '" title="Edit ' . $view->escapeHtml($entity->getName()) . '">'
+              .     '<i class="icon-pencil"></i>'
+              . '</a>'
+              . '&nbsp;'
+              . '<a href="#deleteConfirmationModal_' . $entity->getId() . '" role="button" data-toggle="modal" title="Delete ' . $view->escapeHtml($entity->getName()) . '">'
+              .     '<i class="icon-remove"></i>'
+              . '</a>'
+              . $view->partial('dlc-use-case/partials/deleteConfirmationModal.phtml', array(
+                  'id'          => $entity->getId(),
+                  'route'       => 'dlcusecase/priority/delete',
+                  'routeParams' => array('id' => $entity->getId()),
+                  'question'    => 'Are you sure that you want to delete priority "' . $view->escapeHtml($entity->getName()) . '"?',
+              ));
+        return $html;
+    },
+);
+
+// Render entity table
+echo $this->partial('dlc-use-case/partials/entityTable.phtml', array(
+    'entities'          => $this->entities,
+    'route'             => 'dlcusecase/priority',
+    'query'             => $this->query,
+    'orderBy'           => $this->orderBy,
+    'sort'              => $this->sort,
+    'displayProperties' => $displayProperties,
+));
+
+// Render pagination controls
+echo $this->paginationControl(
+        $this->entities,
+        'Sliding',
+        'dlc-use-case/partials/pagination.phtml',
+        array(
+            'route' => 'dlcusecase/priority',
+            'query' => array(
+                'query'   => $this->query,
+                'orderBy' => $this->orderBy,
+                'sort'    => $this->sort
+            )
+        )
+);
+?>

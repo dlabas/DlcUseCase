@@ -1,0 +1,45 @@
+<?php 
+$titles = array(
+    array('label' => 'Use Case', 'href' => $this->url('dlcusecase', array())),
+    array('label' => 'Priority', 'href' => $this->url('dlcusecase/priority', array())),
+    array('label' => 'Show', 'href' => $this->url('dlcusecase/priority/show', array('id' => $entity->getId()))),
+);
+
+$actions = array(
+    array('label' => 'Edit', 'icon' => 'pencil', 'href' => $this->url('dlcusecase/priority/edit', array('id' => $entity->getId()))),
+);
+
+echo $this->partial('dlc-use-case/partials/header.phtml', array(
+    'title'   => $titles,
+    'image'   => '/img/no_thumbnail.png',
+    'actions' => $actions
+));
+?>
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="btn-group">
+            <a class="btn" href="<?php echo $this->url('dlcusecase/priority', array()) ?>" title="Back to list"><i class="icon-list"></i> Back to list</a>
+            <a class="btn" href="<?php echo $this->url('dlcusecase/priority/edit', array('id' => $this->entity->getId())) ?>" title="edit"><i class="icon-pencil"></i> Edit</a>
+            <a class="btn" href="#deleteConfirmationModal_<?php echo $this->entity->getId() ?>" role="button" data-toggle="modal" title="delete"><i class="icon-trash"></i> Delete</a>
+        </div>
+        <?php echo $this->partial('dlc-use-case/partials/deleteConfirmationModal.phtml', array(
+          'id'          => $this->entity->getId(),
+          'route'       => 'dlcusecase/priority/delete',
+          'routeParams' => array('id' => $this->entity->getId()),
+          'question'    => 'Are you sure that you want to delete priority "' . $this->escapeHtml($this->entity->getName()) . '"?',
+      ));?>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <dl class="dl-horizontal">
+            <dt><?php echo $this->translate('ID') ?></dt>
+            <dd><?php echo $this->escapeHtml($this->entity->getId()) ?></dd>
+            
+            <dt><?php echo $this->translate('Name') ?></dt>
+            <dd><?php echo $this->escapeHtml($this->entity->getName()) ?></dd>
+        </dl>
+    </div>
+</div>

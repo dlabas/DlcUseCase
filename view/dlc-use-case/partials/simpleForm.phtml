@@ -1,0 +1,63 @@
+<?php
+    $form = $this->form;
+    
+    // Set attributes
+    $form->setAttribute('action', $this->action);
+    $form->setAttribute('method', 'post');
+    $form->setAttribute('class', 'form-horizontal');
+    
+    // Prepare the form elements
+    $form->prepare();
+    
+    $messages = $form->getMessages();
+    
+    // Render the opening tag
+    echo $this->form()->openTag($form);
+?>
+
+    <?php if (count($messages) > 0): ?>
+        <?php foreach ($messages as $field => $messagesForField): ?>
+            <?php 
+                $label = $form->get($field)->getLabel();
+                $label = $label ? $label . ': ' : '';
+            ?>
+            <?php foreach ($messagesForField as $messageKey => $message): ?>
+                <div class="alert alert-error">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <?php echo $label . $message ?>
+                </div>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
+    <?php endif;?>
+
+    <?php
+    //Render form elements
+    echo $this->partial('dlc-use-case/partials/formElements.phtml', array(
+        'elements'   => $form->getElements(),
+        'renderButtons' => false,
+    ));
+    ?>
+    
+    <?php
+    //Render form fFieldsets
+    echo $this->partial('dlc-use-case/partials/formFieldsets.phtml', array(
+        'fieldsets' => $form->getFieldsets(),
+    ));
+    ?>
+    
+    <?php if ($this->redirect): ?>
+        <input type="hidden" name="redirect" value="<?php echo $this->redirect ?>" />
+    <?php endif ?>
+    
+    <?php
+    //Render form buttons
+    echo $this->partial('dlc-use-case/partials/formElements.phtml', array(
+        'elements'          => $form->getElements(),
+        'renderButtonsOnly' => true,
+    ));
+    ?>
+
+<?php    
+    // Render the closing tag
+    echo $this->form()->closeTag();
+?>

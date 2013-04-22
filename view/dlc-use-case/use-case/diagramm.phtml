@@ -1,0 +1,24 @@
+<?php 
+$titles = array(
+    array('label' => 'Use Case', 'href' => $this->url('dlcusecase', array())),
+    array('label' => 'Diagramm', 'href' => $this->url('dlcusecase/diagramm', array())),
+);
+
+$actions = array(
+    //array('label' => 'Add new', 'icon' => 'plus', 'href' => $this->url('dlcusecase/add', array())),
+);
+
+echo $this->partial('dlc-use-case/partials/header.phtml', array(
+    'title'   => $titles,
+    'image'   => '/img/no_thumbnail.png',
+    'actions' => $actions
+));
+?>
+
+<a href="<?php echo $this->diagramm->toImage() ?>" target="_blank"><img src="<?php echo $this->diagramm->toImage() ?>" /></a>
+
+<hr />
+
+<pre>
+<?php echo $this->diagramm->toText() ?>
+</pre>

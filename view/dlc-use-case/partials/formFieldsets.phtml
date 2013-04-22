@@ -1,0 +1,12 @@
+<?php
+foreach ($this->fieldsets as $fieldset) {
+    if ($fieldset instanceof \Zend\Form\Element\Collection) {
+        echo $this->partial('dlc-use-case/partials/formCollection.phtml', array(
+            'formCollectionElement' => $fieldset,
+        ));
+    } else {
+        echo $this->partial('dlc-use-case/partials/formElements.phtml', array(
+            'elements'   => $fieldset->getElements(),
+        ));
+    }
+}

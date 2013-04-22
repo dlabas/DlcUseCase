@@ -1,0 +1,73 @@
+<?php 
+if (is_string($this->title)) {
+    $this->title = array(
+        array('label' => $this->title)
+    );
+}
+?>
+<ul class="breadcrumb">
+    <li><a href="/">Home</a> <span class="divider">/</span></li>
+    <!-- <li><a href="<?php echo $this->url('dlcusecase') ?>" title="<?php echo $this->translate('Back to UseCase') ?>"><?php echo $this->translate('UseCase') ?></a> <span class="divider">/</span></li> -->
+    <?php for($i=0;$i<count($this->title);$i++): ?>
+        <?php
+            $title = $this->title[$i];
+            $class = $i == count($this->title)-1 ? ' class="active"' : '';
+            $divider = $i == count($this->title)-1 ? '' : '<span class="divider">/</span>';
+        ?>
+        <li<?php echo $class ?>>
+            <?php if (isset($title['href'])): ?>
+                <a href="<?php echo $title['href'] ?>" title="<?php echo $this->escapeHtml($title['label']) ?>">
+            <?php endif; ?>
+            <?php echo $this->escapeHtml($title['label']) ?>
+            <?php if (isset($title['href'])): ?>
+                </a>
+            <?php endif; ?>
+            <?php echo $divider ?>
+        </li>
+    <?php endfor; ?>
+</ul>
+
+<div class="row">
+    <div class="span1">
+      <img class="media-object" data-src="holder.js/64x64" alt="64x64" style="width: 64px; height: 64px;" src="<?php echo $this->image; ?>">
+    </div>
+    <div class="span11">
+        <h2>
+            <?php if (isset($title['href'])): ?>
+                <a href="<?php echo $title['href'] ?>" title="<?php echo $this->escapeHtml($title['label']) ?>">
+            <?php endif; ?>
+            <?php echo $this->escapeHtml($title['label']) ?>
+            <?php if (isset($title['href'])): ?>
+                </a>
+            <?php endif; ?>
+        </h2>
+    </div>
+    <!--<div class="span2">
+    <div class="btn-group pull-right">
+        <?php foreach ($this->actions as $action): ?>
+            <a class="btn btn-large" href="<?php echo $this->escapeHtml($action['href']) ?>"><i class="icon-<?php echo $this->escapeHtml($action['icon']) ?>"></i> <?php //echo $this->escapeHtml($action['label']) ?></a>
+        <?php endforeach; ?>
+        </div>
+    </div-->
+</div>
+<!-- 
+<div class="row">
+    <div class="span12">
+        <?php foreach ($this->actions as $action): ?>
+            <a href="<?php echo $this->escapeHtml($action['href']) ?>"><?php echo $this->escapeHtml($action['label']) ?></a>
+        <?php endforeach; ?>
+    </div>
+</div>
+ -->
+<hr />
+<!-- 
+<div class="row">
+    <div class="span12">
+        <p>
+        <?php foreach ($this->actions as $action): ?>
+            <a href="<?php echo $this->escapeHtml($action['href']) ?>"><?php echo $this->escapeHtml($action['label']) ?></a>
+        <?php endforeach; ?>
+        </p>
+    </div>
+</div>
+ -->

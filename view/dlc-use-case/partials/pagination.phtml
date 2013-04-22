@@ -1,0 +1,43 @@
+<?php if ($this->pageCount): ?>
+<div class="row-fluid module-row ">
+    <div class="span12">
+        <div class="row-fluid">
+            <div class="pagination pull-right">
+                <ul>
+                    <?php if(isset($this->previous)): ?>
+                    <!-- First page link -->
+                    <li>
+                        <a href="<?php echo $this->url($this->route, array('page' => $this->first), array('query' => $query)); ?>">&lt;&lt; First</a>
+                    </li>
+
+                    <!-- Previous page link -->
+                    <li>
+                        <a href="<?php echo $this->url($this->route, array('page' => $this->previous), array('query' => $query)); ?>">Previous &gt;</a>
+                    </li>
+                    <?php endif; ?>
+
+
+                    <!-- Numbered page links -->
+                    <?php foreach ($this->pagesInRange as $page): ?>
+                    <li<?php echo ($page == $this->current) ? ' class="active"' : ''; ?>>
+                        <a href="<?php echo $this->url($this->route, array('page' => $page), array('query' => $query)); ?>"><?php echo $page; ?></a>
+                    </li>
+                    <?php endforeach; ?>
+
+                    <?php if(isset($this->next)): ?>
+                    <!-- Next page link -->
+                    <li>
+                        <a href="<?php echo $this->url($this->route, array('page' => $this->next), array('query' => $query)); ?>">Next &gt;</a>
+                    </li>
+
+                    <!-- Last page link -->
+                    <li>
+                        <a href="<?php echo $this->url($this->route, array('page' => $this->last), array('query' => $query)); ?>">Last &gt;&gt;</a>
+                    </li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>

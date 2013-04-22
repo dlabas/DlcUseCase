@@ -1,0 +1,23 @@
+<?php 
+$titles = array(
+    array('label' => 'Use Case', 'href' => $this->url('dlcusecase', array())),
+    array('label' => 'Type', 'href' => $this->url('dlcusecase/type/list', array())),
+    array('label' => $this->form->getLabel(), 'href' => $this->url('dlcusecase/type/add', array())),
+);
+
+$actions = array(
+    //array('label' => 'Add new', 'icon' => 'plus', 'href' => $this->url('dlcusecase/type/add', array())),
+);
+
+echo $this->partial('dlc-use-case/partials/header.phtml', array(
+    'title'   => $titles,
+    'image'   => '/img/no_thumbnail.png',
+    'actions' => $actions
+));
+
+echo $this->partial('dlc-use-case/partials/simpleForm.phtml', array(
+    'form'     => $this->form,
+    'action'   => $this->url('dlcusecase/type/add', array()),
+    'redirect' => $this->redirect,
+));
+?>
