@@ -59,6 +59,12 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     protected $link;
     
     /**
+     * @ORM\Column(type="string",nullable=true)
+     * @var string
+     */
+    protected $note;
+    
+    /**
      * Dependencies of this node
      * 
      * @ORM\OneToMany(targetEntity="Dependency", mappedBy="fromNode",cascade={"persist", "remove"})
@@ -83,7 +89,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         $this->usedByDependencies = new ArrayCollection();
     }
 
-	/**
+    /**
      * Getter for $id
      *
      * @return number $id
@@ -93,7 +99,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this->id;
     }
 
-	/**
+    /**
      * Setter for $id
      *
      * @param  number $id
@@ -105,7 +111,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this;
     }
 
-	/**
+    /**
      * Getter for $name
      *
      * @return string $name
@@ -115,7 +121,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this->name;
     }
 
-	/**
+    /**
      * Setter for $name
      *
      * @param  string $name
@@ -127,6 +133,11 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this;
     }
     
+    /**
+     * Returns the extended name
+     * 
+     * @return string
+     */
     public function getExtendedName()
     {
         $extendedName = $this->getType()->getName() 
@@ -135,7 +146,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $extendedName;
     }
 
-	/**
+    /**
      * Getter for $type
      *
      * @return \DlcUseCase\Entity\Type $type
@@ -145,7 +156,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this->type;
     }
 
-	/**
+    /**
      * Setter for $type
      *
      * @param  \DlcUseCase\Entity\Type $type
@@ -157,7 +168,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this;
     }
 
-	/**
+    /**
      * Getter for $category
      *
      * @return \DlcCategory\Entity\Category $category
@@ -167,7 +178,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this->category;
     }
 
-	/**
+    /**
      * Setter for $category
      *
      * @param  \DlcCategory\Entity\Category $category
@@ -179,7 +190,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this;
     }
 
-	/**
+    /**
      * Getter for $priority
      *
      * @return \DlcUseCase\Entity\Priority $priority
@@ -189,7 +200,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this->priority;
     }
 
-	/**
+    /**
      * Setter for $priority
      *
      * @param  \DlcUseCase\Entity\Priority $priority
@@ -211,7 +222,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this->link;
     }
 
-	/**
+    /**
      * Setter for $link
      *
      * @param  string $link
@@ -223,7 +234,29 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this;
     }
 
-	/**
+    /**
+     * Getter for $note
+     *
+     * @return string $note
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * Setter for $note
+     *
+     * @param  string $note
+     * @return UseCase
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+        return $this;
+    }
+
+    /**
      * Getter for $dependencies
      *
      * @return \Zend\Stdlib\ArrayObject $dependencies
@@ -233,7 +266,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this->dependencies;
     }
 
-	/**
+    /**
      * Setter for $dependencies
      *
      * @param  \Zend\Stdlib\ArrayObject $dependencies
@@ -275,7 +308,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this;
     }
 
-	/**
+    /**
      * Getter for $usedByDependencies
      *
      * @return \Zend\Stdlib\ArrayObject $usedByDependencies
@@ -285,7 +318,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this->usedByDependencies;
     }
 
-	/**
+    /**
      * Setter for $usedByDependencies
      *
      * @param  \Zend\Stdlib\ArrayObject $usedByDependencies
@@ -297,7 +330,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return $this;
     }
 
-	/**
+    /**
      * Returns the unique identifier of this node
      *
      * @return string
@@ -333,7 +366,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         return DiagrammNode::TYPE_USE_CASE;
     }
 
-	/**
+    /**
      * @ORM\PrePersist
      */
     public function onPrePersist()
