@@ -21,7 +21,7 @@
                                 $sort = null;
                             }
                             
-                            $style = $label == '<!--ACTIONS-->' ? ' width="60px;"' : '';
+                            $style = $label == '<!--ACTIONS-->' ? ' width="70px;"' : '';
                             $label = $label == '<!--ACTIONS-->' ? ' ' : $label;
                             
                         ?><th<?php echo $style ?>><a href="<?php echo $this->url($this->route, array('page' => 1), array('query' => array('query' => $this->query, 'orderBy' => $orderBy, 'sort' => $sort))) ?>" title="Sort by <?php echo $this->escapeHtml($label) ?>"><?php echo $this->escapeHtml($label) ?></a>

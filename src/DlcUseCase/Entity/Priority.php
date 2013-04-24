@@ -14,31 +14,34 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Priority extends AbstractProvidesHistoryEntity
 {
+
     /**
      * @ORM\Id @ORM\Column(type="integer")
      * @ORM\GeneratedValue
+     *
      * @var int
      */
     protected $id;
-    
+
     /**
      * @ORM\Column(type="string",length=100)
+     *
      * @var string
      */
     protected $name;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="UseCase", mappedBy="priority")
      * ævar ArrayCollection
      */
     protected $useCases;
-    
+
     public function __construct()
     {
         $this->useCases = new ArrayCollection();
     }
-    
-	/**
+
+    /**
      * Getter for $id
      *
      * @return number $id
@@ -48,10 +51,10 @@ class Priority extends AbstractProvidesHistoryEntity
         return $this->id;
     }
 
-	/**
+    /**
      * Setter for $id
      *
-     * @param  number $id
+     * @param number $id
      * @return UseCaseType
      */
     public function setId($id)
@@ -60,7 +63,7 @@ class Priority extends AbstractProvidesHistoryEntity
         return $this;
     }
 
-	/**
+    /**
      * Getter for $name
      *
      * @return string $name
@@ -70,10 +73,10 @@ class Priority extends AbstractProvidesHistoryEntity
         return $this->name;
     }
 
-	/**
+    /**
      * Setter for $name
      *
-     * @param  string $name
+     * @param string $name
      * @return UseCaseType
      */
     public function setName($name)
@@ -82,7 +85,7 @@ class Priority extends AbstractProvidesHistoryEntity
         return $this;
     }
 
-	/**
+    /**
      * Getter for $useCases
      *
      * @return \Doctrine\Common\Collections\ArrayCollection $useCases
@@ -92,10 +95,10 @@ class Priority extends AbstractProvidesHistoryEntity
         return $this->useCases;
     }
 
-	/**
+    /**
      * Setter for $useCases
      *
-     * @param  \Doctrine\Common\Collections\ArrayCollection $useCases
+     * @param \Doctrine\Common\Collections\ArrayCollection $useCases
      * @return UseCaseType
      */
     public function setUseCases($useCases)
@@ -111,7 +114,7 @@ class Priority extends AbstractProvidesHistoryEntity
     {
         parent::onPrePersist();
     }
-    
+
     /**
      * @ORM\PreUpdate
      */

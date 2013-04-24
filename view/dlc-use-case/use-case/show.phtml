@@ -14,6 +14,7 @@ echo $this->partial('dlc-use-case/partials/header.phtml', array(
     'actions' => $actions
 ));
 ?>
+<?php $this->placeholder('useCaseData')->captureStart(); ?>
 <div class="row-fluid">
     <div class="span12">
         <div class="btn-group">
@@ -34,32 +35,84 @@ echo $this->partial('dlc-use-case/partials/header.phtml', array(
     <div class="span12">
         <dl>
             <dt><?php echo $this->translate('ID') ?></dt>
-            <dd><pre><?php echo $this->entity->getId() ?></pre></dd>
+            <dd><pre><?php echo $this->escapeHtml($this->entity->getId()) ?></pre></dd>
             
             <dt><?php echo $this->translate('Name') ?></dt>
-            <dd><pre><?php echo $this->entity->getName() ?></pre></dd>
+            <dd><pre><?php echo $this->escapeHtml($this->entity->getName()) ?></pre></dd>
             
             <dt><?php echo $this->translate('Type') ?></dt>
-            <dd><pre><?php echo $this->entity->getType()->getName() ?></pre></dd>
+            <dd><pre><?php echo $this->escapeHtml($this->entity->getType()->getName()) ?></pre></dd>
             
-            <dt><?php echo $this->translate('Category') ?></dt>
-            <dd><pre><?php echo $this->entity->getCategory()->getTitle() ?></pre></dd>
+            <?php // Display optional properties ?>
+            <?php foreach ($this->options->getOptionalFields() as $fieldName => $fieldLabel): ?>
+                <?php
+                    $value = $this->entity->$fieldName;
+                    
+                    if (is_object($value)) {
+                        if (method_exists($value, 'getTitle')) {
+                            $value = $value->getTitle();
+                        } elseif (method_exists($value, 'getName')) {
+                            $value = $value->getName();
+                        } else {
+                            throw new \RuntimeException('Cannot load value for object');
+                        }
+                    }
+                ?>
+                <?php if ($fieldName == 'link'): ?>
+                    <dt><?php echo $this->translate($fieldLabel) ?></dt>
+                    <dd><pre><a href="<?php echo $this->escapeUrl($this->entity->getLink()) ?>" target="_blank"><?php echo $this->escapeUrl($this->entity->getLink()) ?></a></pre></dd>
+                <?php else: ?>
+                    <dt><?php echo $this->translate($fieldLabel) ?></dt>
+                    <dd><pre><?php echo $this->escapeHtml($value) ?></pre></dd>
+                <?php endif; ?>
+            <?php endforeach; ?>
             
-            <dt><?php echo $this->translate('Priority') ?></dt>
-            <dd><pre><?php echo $this->entity->getPriority()->getName() ?></pre></dd>
-            
-            <dt><?php echo $this->translate('Link') ?></dt>
-            <dd><pre><?php echo $this->entity->getLink() ?></pre></dd>
+            <?php 
+            if ($this->entity->getUsedByDependencies()->count() < 1) {
+                $depBySpace = '&nbsp;';
+            } else {
+                $depBySpace = '';
+            }
+            if ($this->entity->getDependencies()->count() < 1) {
+                $depSpace = '&nbsp;';
+            } else {
+                $depSpace = '';
+            }
+            ?>
             
             <dt><?php echo $this->translate('Used by dependencies') ?></dt>
-            <dd><pre><?php foreach ($this->entity->getUsedByDependencies() as $dependency): ?>* (<?php echo $dependency->getType() ?>) <?php echo $dependency->getFromNode()->getExtendedName() . PHP_EOL ?>
-<?php endforeach; ?></pre>
+            <dd><pre><?php echo $depBySpace ?><?php foreach ($this->entity->getUsedByDependencies() as $dependency): ?>- (<?php echo $dependency->getType() ?>) <?php echo $dependency->getFromNode()->getExtendedName() . PHP_EOL ?>
+<?php endforeach; ?> </pre>
             </dd>
             
             <dt><?php echo $this->translate('Dependencies to') ?></dt>
-            <dd>
-                <pre><?php foreach ($this->entity->getDependencies() as $dependency): ?>* (<?php echo $dependency->getType() ?>) <?php echo $dependency->getToNode()->getExtendedName() . PHP_EOL ?>
+            <dd><pre><?php echo $depSpace ?><?php foreach ($this->entity->getDependencies() as $dependency): ?>* (<?php echo $dependency->getType() ?>) <?php echo $dependency->getToNode()->getExtendedName() . PHP_EOL ?>
 <?php endforeach; ?></pre></dd>
         </dl>
     </div>
 </div>
+<?php $this->placeholder('useCaseData')->captureEnd() ?>
+
+<?php if ($this->options->getDisplayDiagrammInDetailView() && isset($this->diagramm)) {
+    $wikiPage = $entity->getGeneratedWikiPage();
+    if ($wikiPage) {
+        $infoTab = array(
+            'label' => 'Generated wiki page',
+            'data'  => '<pre>' . $wikiPage . '</pre>',
+        );
+    } else {
+        $infoTab = null;
+    }
+    
+    echo $this->partial('dlc-diagramm/partials/diagrammInTabs.phtml', array(
+        'diagramm'  => $this->diagramm,
+        'displayAs' => $this->options->getDisplayDiagrammAs(),
+        'dataTab'   => array(
+            'label' => 'Use case data',
+            'data'  => $this->placeholder('useCaseData'),
+        ),
+        'infoTab'   => $infoTab
+    ));
+} else {
+    echo $this->placeholder('useCaseData');
+} ?>

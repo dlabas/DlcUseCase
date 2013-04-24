@@ -13,12 +13,9 @@ echo $this->partial('dlc-use-case/partials/header.phtml', array(
     'image'   => '/img/no_thumbnail.png',
     'actions' => $actions
 ));
+
+echo $this->partial('dlc-diagramm/partials/diagrammInTabs.phtml', array(
+    'diagramm'  => $this->diagramm,
+    'displayAs' => $this->options->getDisplayDiagrammAs(),
+));
 ?>
-
-<a href="<?php echo $this->diagramm->toImage() ?>" target="_blank"><img src="<?php echo $this->diagramm->toImage() ?>" /></a>
-
-<hr />
-
-<pre>
-<?php echo $this->diagramm->toText() ?>
-</pre>

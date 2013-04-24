@@ -23,8 +23,34 @@ class UseCaseController extends AbstractEntityActionController
         $diagramm = $this->getService()->createUseCaseDiagramm();
         
         $view = new ViewModel(array(
-            'diagramm'  => $diagramm,
+            'diagramm' => $diagramm,
+            'options'  => $this->getOptions(),
         ));
+        
+        return $view;
+    }
+    
+    /**
+     * Show action for viewing a single entity
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function showAction()
+    {
+        $id = (int) $this->params()->fromRoute('id', null);
+    
+        $service = $this->getService();
+        $entity  = $service->getById($id);
+    
+        $view = new ViewModel(array(
+            'entity'  => $entity,
+            'options' => $this->getOptions(),
+        ));
+        
+        if ($this->getOptions()->getDisplayDiagrammInDetailView()) {
+            $diagramm = $this->getService()->createUseCaseDiagrammFor($entity);
+            $view->setVariable('diagramm', $diagramm);
+        }
         
         return $view;
     }

@@ -1,10 +1,10 @@
-<?php 
+<?php
 $formId = 'deleteConfirmationForm_' . $this->id;
 $submitButtonId = 'deleteConfirmation_' . $this->id . '_SubmitButton';
 
 if (!isset($this->form)) {
     $form = new \Zend\Form\Form($formId);
-    
+
     $form->add(array(
         'type' => 'Zend\Form\Element\Hidden',
         'name' => 'id',
@@ -14,7 +14,7 @@ if (!isset($this->form)) {
             'value'  => $this->id,
         ),
     ));
-    
+
     $form->add(array(
         'type' => 'Zend\Form\Element\Hidden',
         'name' => 'confirmed',
@@ -24,7 +24,7 @@ if (!isset($this->form)) {
             'value'  => 0,
         ),
     ));
-    
+
     $form->add(new \Zend\Form\Element\Csrf('security'));
 } else {
     $form = $this->form;
@@ -55,8 +55,8 @@ $form->prepare();
             $(document).ready(function() {
                 $('#<?php echo $submitButtonId ?>').click(function() {
                     $('#<?php echo $formId?> input[name="confirmed"]:input').val(1);
-                	
-                	$('#<?php echo $formId?>').submit();
+
+                    $('#<?php echo $formId?>').submit();
                 });
             });
         <?php $this->inlineScript()->captureEnd() ?>

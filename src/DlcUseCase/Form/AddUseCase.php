@@ -15,6 +15,10 @@ class AddUseCase extends BaseUseCase
     
         $this->remove('id');
         
-        $this->get('priority')->setValue(2);
+        $priorityElement = $this->get('priority');
+        
+        if (null !== $priorityElement) {
+            $priorityElement->setValue(2);
+        }
     }
 }

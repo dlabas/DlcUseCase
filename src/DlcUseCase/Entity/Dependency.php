@@ -13,36 +13,41 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Dependency extends DiagrammDependency
 {
+
     /**
      * @ORM\Id @ORM\Column(type="integer")
      * @ORM\GeneratedValue
+     *
      * @var int
      */
     protected $id;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="UseCase", inversedBy="dependenciesFrom")
      * @ORM\JoinColumn(name="from_use_case_id", referencedColumnName="id")
+     *
      * @var UseCase
      */
     protected $fromNode;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="UseCase", inversedBy="dependenciesTo")
      * @ORM\JoinColumn(name="to_use_case_id", referencedColumnName="id")
+     *
      * @var UseCase
      */
     protected $toNode;
-    
+
     /**
      * Dependency type
      *
      * @ORM\Column(type="string",length=100,unique=false)
+     *
      * @var string
      */
     protected $type;
-    
-	/**
+
+    /**
      * Getter for $id
      *
      * @return number $id
@@ -52,10 +57,10 @@ class Dependency extends DiagrammDependency
         return $this->id;
     }
 
-	/**
+    /**
      * Setter for $id
      *
-     * @param  number $id
+     * @param number $id
      * @return Dependency
      */
     public function setId($id)
@@ -63,7 +68,4 @@ class Dependency extends DiagrammDependency
         $this->id = $id;
         return $this;
     }
-
-    
-    
 }

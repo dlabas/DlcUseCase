@@ -50,16 +50,43 @@ $displayProperties = array(
               . '<a href="' . $view->url('dlcusecase/edit', array('id' => $entity->getId())) . '" title="Edit ' . $view->escapeHtml($entity->getName()) . '">'
               .     '<i class="icon-pencil"></i>'
               . '</a>'
-              . '&nbsp;'
-              . '<a href="#deleteConfirmationModal_' . $entity->getId() . '" role="button" data-toggle="modal" title="Delete ' . $view->escapeHtml($entity->getName()) . '">'
-              .     '<i class="icon-remove"></i>'
-              . '</a>'
-              . $view->partial('dlc-use-case/partials/deleteConfirmationModal.phtml', array(
-                  'id'          => $entity->getId(),
-                  'route'       => 'dlcusecase/delete',
-                  'routeParams' => array('id' => $entity->getId()),
-                  'question'    => 'Are you sure that you want to delete priority "' . $view->escapeHtml($entity->getName()) . '"?',
-              ));
+              . '&nbsp;';
+              
+        $wikiPage = $entity->getGeneratedWikiPage();
+        
+        if ($wikiPage) {
+            $html .= '<a href="#wikiPageModal_' . $entity->getId() . '" role="button" data-toggle="modal" title="Show generated wiki page for ' . $view->escapeHtml($entity->getName()) . '">'
+                   .     '<i class="icon-file"></i>'
+                   . '</a>'. '&nbsp;';
+            
+            $wikiPageModal = '<div id="wikiPageModal_' . $entity->getId() . '" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="wikiPageModal_' . $entity->getId() . 'Label" aria-hidden="true">'
+                           .     '<div class="modal-header">'
+                           .         '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'
+                           .         '<h3 id="wikiPageModal_' . $entity->getId() . 'Label">Generated wiki page</h3>'
+                           .     '</div>'
+                           .     '<div class="modal-body">'
+                           .         '<p><pre>' . $wikiPage. '</pre></p>'
+                           .     '</div>'
+                           .     '<div class="modal-footer">'
+                           .         '<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>'
+                           .     '</div>'
+                           . '</div>';
+                   
+        } else {
+            $wikiPageModal = '';
+        }
+        
+        $html .= '<a href="#deleteConfirmationModal_' . $entity->getId() . '" role="button" data-toggle="modal" title="Delete ' . $view->escapeHtml($entity->getName()) . '">'
+               .     '<i class="icon-remove"></i>'
+               . '</a>'
+               . $wikiPageModal
+               . $view->partial('dlc-use-case/partials/deleteConfirmationModal.phtml', array(
+                   'id'          => $entity->getId(),
+                   'route'       => 'dlcusecase/delete',
+                   'routeParams' => array('id' => $entity->getId()),
+                   'question'    => 'Are you sure that you want to delete priority "' . $view->escapeHtml($entity->getName()) . '"?',
+               ));
+        
         return $html;
     },
 );

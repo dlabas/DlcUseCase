@@ -4,6 +4,7 @@ namespace DlcUseCase\Entity;
 use DlcDiagramm\Diagramm\Dependency\DependencyInterface;
 use DlcDiagramm\Diagramm\Node as DiagrammNode;
 use DlcDiagramm\Diagramm\Node\NodeInterface as DiagrammNodeInterface;
+use DlcDiagramm\Diagramm\NoteProviderInterface;
 use DlcDoctrine\Entity\AbstractProvidesHistoryEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,7 +17,7 @@ use Zend\Stdlib\ArrayObject;
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="use_cases")
  */
-class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInterface
+class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInterface, NoteProviderInterface
 {
     /**
      * @ORM\Id @ORM\Column(type="integer")
@@ -39,6 +40,8 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     protected $type;
     
     /**
+     * Optional field: category 
+     * 
      * @ORM\ManyToOne(targetEntity="DlcCategory\Entity\CategoryInterface")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      * @var \DlcCategory\Entity\Category
@@ -46,6 +49,8 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     protected $category;
     
     /**
+     * Optional field: priority 
+     * 
      * @ORM\ManyToOne(targetEntity="Priority")
      * @ORM\JoinColumn(name="priority_id", referencedColumnName="id")
      * @var Priority
@@ -53,16 +58,60 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     protected $priority;
     
     /**
-     * @ORM\Column(type="string")
+     * Optional field: link 
+     * 
+     * @ORM\Column(type="string",nullable=true)
      * @var string
      */
     protected $link;
     
     /**
+     * Optional field: note 
+     * 
      * @ORM\Column(type="string",nullable=true)
      * @var string
      */
     protected $note;
+    
+    /**
+     * Optional field: description 
+     * 
+     * @ORM\Column(type="text",nullable=true)
+     * @var string
+     */
+    protected $description;
+    
+    /**
+     * Optional field: details 
+     * 
+     * @ORM\Column(type="text",nullable=true)
+     * @var string
+     */
+    protected $details;
+    
+    /**
+     * Optional field: comment 
+     * 
+     * @ORM\Column(type="text",nullable=true)
+     * @var string
+     */
+    protected $comment;
+    
+    /**
+     * Optional field: input data
+     * 
+     * @ORM\Column(name="input_data",type="text",nullable=true)
+     * @var string
+     */
+    protected $inputData;
+    
+    /**
+     * Optional field: output data
+     * 
+     * @ORM\Column(name="output_data",type="text",nullable=true)
+     * @var string
+     */
+    protected $outputData;
     
     /**
      * Dependencies of this node
@@ -79,6 +128,13 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
      * @var ArrayObject
      */
     protected $usedByDependencies;
+    
+    /**
+     * Generated wiki page
+     * 
+     * @var string
+     */
+    protected $generatedWikiPage;
     
     /**
      * The constructor
@@ -140,9 +196,15 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
      */
     public function getExtendedName()
     {
-        $extendedName = $this->getType()->getName() 
-                      . ' - ' . $this->getCategory()->getTitle() 
-                      . ' - ' . $this->getName();
+        $extendedName = $this->getType()->getName();
+        
+        $catTitle = $this->getCategoryTitle();
+        if ($catTitle !== null) {
+            $extendedName .= '-' . $this->getCategoryTitle();
+        }
+        
+        $extendedName .= '-' . $this->getName();
+        
         return $extendedName;
     }
 
@@ -189,6 +251,22 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         $this->category = $category;
         return $this;
     }
+    
+    /**
+     * Returns the title of it's category or null if category is not set
+     * 
+     * @return NULL|string
+     */
+    public function getCategoryTitle()
+    {
+        $cat = $this->getCategory();
+        
+        if (null === $cat) {
+            return null;
+        }
+        
+        return $cat->getTitle();
+    }
 
     /**
      * Getter for $priority
@@ -210,6 +288,22 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     {
         $this->priority = $priority;
         return $this;
+    }
+    
+    /**
+     * Returns the name of it's priority or null if priority is not set
+     *
+     * @return NULL|string
+     */
+    public function getPriorityName()
+    {
+        $priority = $this->getPriority();
+        
+        if (null === $priority) {
+            return null;
+        }
+        
+        return $priority->getName();
     }
     
     /**
@@ -235,13 +329,23 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     }
 
     /**
-     * Getter for $note
+     * Returns an note
      *
-     * @return string $note
+     * @return string
      */
     public function getNote()
     {
         return $this->note;
+    }
+    
+    /**
+     * Returns the background color of this note
+     *
+     * @return string
+     */
+    public function getNoteBg()
+    {
+        return NoteProviderInterface::BG_BEIGE;
     }
 
     /**
@@ -253,6 +357,116 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     public function setNote($note)
     {
         $this->note = $note;
+        return $this;
+    }
+
+    /**
+     * Getter for $description
+     *
+     * @return string $description
+     */
+    public function getDescription ()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Setter for $description
+     *
+     * @param  string $description
+     * @return UseCase
+     */
+    public function setDescription ($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Getter for $details
+     *
+     * @return string $details
+     */
+    public function getDetails ()
+    {
+        return $this->details;
+    }
+
+    /**
+     * Setter for $details
+     *
+     * @param  string $details
+     * @return UseCase
+     */
+    public function setDetails ($details)
+    {
+        $this->details = $details;
+        return $this;
+    }
+
+    /**
+     * Getter for $comment
+     *
+     * @return string $comment
+     */
+    public function getComment ()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * Setter for $comment
+     *
+     * @param  string $comment
+     * @return UseCase
+     */
+    public function setComment ($comment)
+    {
+        $this->comment = $comment;
+        return $this;
+    }
+
+    /**
+     * Getter for $inputData
+     *
+     * @return string $inputData
+     */
+    public function getInputData ()
+    {
+        return $this->inputData;
+    }
+
+    /**
+     * Setter for $inputData
+     *
+     * @param  string $inputData
+     * @return UseCase
+     */
+    public function setInputData ($inputData)
+    {
+        $this->inputData = $inputData;
+        return $this;
+    }
+
+    /**
+     * Getter for $outputData
+     *
+     * @return string $outputData
+     */
+    public function getOutputData ()
+    {
+        return $this->outputData;
+    }
+
+    /**
+     * Setter for $outputData
+     *
+     * @param  string $outputData
+     * @return UseCase
+     */
+    public function setOutputData ($outputData)
+    {
+        $this->outputData = $outputData;
         return $this;
     }
 
@@ -364,6 +578,28 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     public function getNodeType()
     {
         return DiagrammNode::TYPE_USE_CASE;
+    }
+    
+    /**
+     * Getter for $generatedWikiPage
+     *
+     * @return string $generatedWikiPage
+     */
+    public function getGeneratedWikiPage()
+    {
+        return $this->generatedWikiPage;
+    }
+    
+    /**
+     * Setter for $generatedWikiPage
+     *
+     * @param  string $generatedWikiPage
+     * @return UseCase
+     */
+    public function setGeneratedWikiPage($generatedWikiPage)
+    {
+        $this->generatedWikiPage = $generatedWikiPage;
+        return $this;
     }
 
     /**
