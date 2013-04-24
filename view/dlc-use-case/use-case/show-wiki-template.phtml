@@ -1,0 +1,22 @@
+<?php
+$titles = array(
+    array('label' => 'Use Case', 'href' => $this->url('dlcusecase', array())),
+    array('label' => 'Show wiki template', 'href' => $this->url('dlcusecase/show-wiki-template', array())),
+);
+
+$actions = array(
+    array('label' => 'Edit', 'icon' => 'pencil', 'href' => $this->url('dlcusecase/edit-wiki-template', array())),
+);
+
+echo $this->partial('dlc-use-case/partials/header.phtml', array(
+    'title'   => $titles,
+    'image'   => '/img/no_thumbnail.png',
+    'actions' => $actions
+));
+?>
+<p>
+    <a href="<?php echo $this->url('dlcusecase/edit-wiki-template', array()) ?>" title="Edit wiki template">Edit wiki template</a>
+</p>
+<pre>
+<?php echo $this->template ?>
+</pre>

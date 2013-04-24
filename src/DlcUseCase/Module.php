@@ -5,31 +5,47 @@ use DlcBase\Module\AbstractModule;
 
 class Module extends AbstractModule
 {
-    
+    public function getViewHelperConfig()
+    {
+        return array(
+            'factories' => array(
+                'dlcRenderWikiTemplate' => function($sm) {
+                    $sm = $sm->getServiceLocator(); // $sm was the view helper's locator
+                    $options = $sm->get('dlcusecase_module_options');
+
+                    $helper = new \DlcUseCase\View\Helper\RenderWikiTemplate();
+                    $helper->setOptions($options);
+                    return $helper;
+                }
+            )
+        );
+    }
+
     public function getServiceConfig()
     {
         return array(
             'aliases' => array(
                 'dlcusecase_doctrine_em' => 'doctrine.entitymanager.orm_default',
             ),
-            
+
             'invokables' => array(
-                'dlcusecase_addpriority_form'    => 'DlcUseCase\Form\AddPriority',
-                'dlcusecase_addtype_form'        => 'DlcUseCase\Form\AddType',
-                'dlcusecase_addusecase_form'     => 'DlcUseCase\Form\AddUseCase',
-                'dlcusecase_dependency_fieldset' => 'DlcUseCase\Form\DependencyFieldset',
-                'dlcusecase_editpriority_form'   => 'DlcUseCase\Form\EditPriority',
-                'dlcusecase_edittype_form'       => 'DlcUseCase\Form\EditType',
-                'dlcusecase_editusecase_form'    => 'DlcUseCase\Form\EditUseCase',
-                'dlcusecase_priority_mapper'     => 'DlcUseCase\Mapper\Priority',
-                'dlcusecase_priority_service'    => 'DlcUseCase\Service\Priority',
-                'dlcusecase_type_mapper'         => 'DlcUseCase\Mapper\Type',
-                'dlcusecase_type_service'        => 'DlcUseCase\Service\Type',
-                'dlcusecase_usecase_mapper'      => 'DlcUseCase\Mapper\UseCase',
-                'dlcusecase_usecase_service'     => 'DlcUseCase\Service\UseCase',
-                'dlcusecase_setup_service'       => 'DlcUseCase\Service\Setup',
+                'dlcusecase_addpriority_form'      => 'DlcUseCase\Form\AddPriority',
+                'dlcusecase_addtype_form'          => 'DlcUseCase\Form\AddType',
+                'dlcusecase_addusecase_form'       => 'DlcUseCase\Form\AddUseCase',
+                'dlcusecase_dependency_fieldset'   => 'DlcUseCase\Form\DependencyFieldset',
+                'dlcusecase_editpriority_form'     => 'DlcUseCase\Form\EditPriority',
+                'dlcusecase_edittype_form'         => 'DlcUseCase\Form\EditType',
+                'dlcusecase_editusecase_form'      => 'DlcUseCase\Form\EditUseCase',
+                'dlcusecase_editwikitemplate_form' => 'DlcUseCase\Form\EditWikiTemplate',
+                'dlcusecase_priority_mapper'       => 'DlcUseCase\Mapper\Priority',
+                'dlcusecase_priority_service'      => 'DlcUseCase\Service\Priority',
+                'dlcusecase_type_mapper'           => 'DlcUseCase\Mapper\Type',
+                'dlcusecase_type_service'          => 'DlcUseCase\Service\Type',
+                'dlcusecase_usecase_mapper'        => 'DlcUseCase\Mapper\UseCase',
+                'dlcusecase_usecase_service'       => 'DlcUseCase\Service\UseCase',
+                'dlcusecase_setup_service'         => 'DlcUseCase\Service\Setup',
             ),
-            
+
             'factories' => array(
                 'dlcusecase_module_options' => function ($sm) {
                     $config = $sm->get('Config');

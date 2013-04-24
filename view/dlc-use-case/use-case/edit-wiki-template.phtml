@@ -1,0 +1,51 @@
+<?php
+$titles = array(
+    array('label' => 'Use Case', 'href' => $this->url('dlcusecase', array())),
+    array('label' => 'Edit wiki template', 'href' => $this->url('dlcusecase/edit-wiki-template', array())),
+);
+
+$actions = array(
+    array('label' => 'Edit', 'icon' => 'pencil', 'href' => $this->url('dlcusecase/edit-wiki-template', array())),
+);
+
+echo $this->partial('dlc-use-case/partials/header.phtml', array(
+    'title'   => $titles,
+    'image'   => '/img/no_thumbnail.png',
+    'actions' => $actions
+));
+?>
+<p>
+    <!-- Button to trigger modal -->
+    <a href="#templatePlaceholderModal" role="button" class="btn btn-info" data-toggle="modal">Show placeholder</a>
+</p>
+<!-- Modal -->
+<div id="templatePlaceholderModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="templatePlaceholderModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="templatePlaceholderModalLabel">Placeholder</h3>
+    </div>
+    <div class="modal-body">
+        <p><dl>
+            <?php foreach ($this->dlcRenderWikiTemplate()->renderMapAsArrayOfStrings() as $placeholder => $value): ?>
+                <dt><?php echo $placeholder ?></dt>
+                <?php if (strpos($value, 'function') === 0): ?>
+                    <dd><pre><?php echo $value ?></pre></dd>
+                <?php else: ?>
+                    <dd><pre>$entity-><?php echo $value ?></pre></dd>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </dl></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+
+<?php
+echo $this->partial('dlc-use-case/partials/simpleForm.phtml', array(
+    'form'      => $this->form,
+    'formClass' => '',
+    'action'    => $this->url('dlcusecase/edit-wiki-template', array()),
+    'redirect'  => $this->redirect,
+));
+?>

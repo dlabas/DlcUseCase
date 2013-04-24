@@ -9,7 +9,7 @@ return array(
             'dlcusecase_type'     => 'DlcUseCase\Controller\TypeController',
         ),
     ),
-    
+
     'dlcdoctrine' => array(
         'resolveTargetEntities' => array(
             //$originalEntity => array($newEntity, $mapping) //Params of ResolveTargetEntityListener::addResolveTargetEntity
@@ -19,12 +19,12 @@ return array(
             ),
         ),
     ),
-    
+
     'DlcFile\Entity\FileInterface' => array(
         'newEntity' => 'DlcFile\Entity\File',
         'mapping'   => array(),
     ),
-    
+
     // Doctrine config
     'doctrine' => array(
         'driver' => array(
@@ -40,7 +40,7 @@ return array(
             )
         )
     ),
-    
+
     'router' => array(
         'routes' => array(
             'dlcusecase' => array(
@@ -148,6 +148,28 @@ return array(
                                 'controller' => 'dlcusecase',
                                 'action'     => 'delete',
                                 'id'         => null,
+                            ),
+                        ),
+                        'may_terminate' => true,
+                    ),
+                    'show-wiki-template' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route'    => '/show-wiki-template',
+                            'defaults' => array(
+                                'controller' => 'dlcusecase',
+                                'action'     => 'showWikiTemplate',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                    ),
+                    'edit-wiki-template' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route'    => '/edit-wiki-template',
+                            'defaults' => array(
+                                'controller' => 'dlcusecase',
+                                'action'     => 'editWikiTemplate',
                             ),
                         ),
                         'may_terminate' => true,
@@ -362,7 +384,12 @@ return array(
             ),
         ),
     ),
-    
+
+    'view_helpers' => array(
+        'invokables' => array(
+        ),
+    ),
+
     'view_manager' => array(
         'template_path_stack' => array(
             'dlcusecase' => __DIR__ . '/../view',

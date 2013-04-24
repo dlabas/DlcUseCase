@@ -1,23 +1,27 @@
 <?php
     $form = $this->form;
-    
+
     // Set attributes
     $form->setAttribute('action', $this->action);
     $form->setAttribute('method', 'post');
-    $form->setAttribute('class', 'form-horizontal');
-    
+
+    if (isset($this->formClass)) {
+        $form->setAttribute('class', $this->formClass);
+    } else {
+        $form->setAttribute('class', 'form-horizontal');
+    }
     // Prepare the form elements
     $form->prepare();
-    
+
     $messages = $form->getMessages();
-    
+
     // Render the opening tag
     echo $this->form()->openTag($form);
 ?>
 
     <?php if (count($messages) > 0): ?>
         <?php foreach ($messages as $field => $messagesForField): ?>
-            <?php 
+            <?php
                 $label = $form->get($field)->getLabel();
                 $label = $label ? $label . ': ' : '';
             ?>
@@ -37,18 +41,18 @@
         'renderButtons' => false,
     ));
     ?>
-    
+
     <?php
     //Render form fFieldsets
     echo $this->partial('dlc-use-case/partials/formFieldsets.phtml', array(
         'fieldsets' => $form->getFieldsets(),
     ));
     ?>
-    
+
     <?php if ($this->redirect): ?>
         <input type="hidden" name="redirect" value="<?php echo $this->redirect ?>" />
     <?php endif ?>
-    
+
     <?php
     //Render form buttons
     echo $this->partial('dlc-use-case/partials/formElements.phtml', array(
@@ -57,7 +61,7 @@
     ));
     ?>
 
-<?php    
+<?php
     // Render the closing tag
     echo $this->form()->closeTag();
 ?>

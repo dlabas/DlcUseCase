@@ -10,16 +10,16 @@ class ModuleOptions extends AbstractOptions
      * Turn off strict options mode
      */
     protected $__strictMode__ = false;
-    
+
     /**
-     * 
+     *
      * @var int
      */
     protected $rootCategoryId = 3;
-    
+
     /**
      * Optional use case fields. Will be used in the UseCaseForm and the detail view of an use case
-     *  
+     *
      * @var array
      */
     protected $optionalFields = array(
@@ -33,23 +33,23 @@ class ModuleOptions extends AbstractOptions
         'inputData'   => 'Input data',
         'outputData'  => 'Output data',
     );
-    
+
     /**
      * Should a diagramm be displayed in the detail view of an use case?
-     * 
+     *
      * @var bool
      */
     protected $displayDiagrammInDetailView = true;
-    
+
     /**
      * How should the diagramm be displayed?
-     * 
+     *
      * Possible values: image, text, both
-     * 
+     *
      * @var string
      */
     protected $displayDiagrammAs = 'both';
-    
+
     /**
      * Use case category entity class name
      *
@@ -59,48 +59,55 @@ class ModuleOptions extends AbstractOptions
 
     /**
      * Use case dependency entity class name
-     * 
+     *
      * @var string
      */
     protected $dependencyEntityClass = 'DlcUseCase\Entity\Dependency';
-    
+
     /**
      * Use case entity class name
-     * 
+     *
      * @var string
      */
     protected $useCaseEntityClass = 'DlcUseCase\Entity\UseCase';
-    
+
+    /**
+     * Placeholder to property map for doku wiki template
+     *
+     * @var array
+     */
+    protected $useCaseDokuWikiTemplatePlaceholders;
+
     /**
      * Template file or string for generating doku wiki pages
-     * 
+     *
      * If this option is false, no page will be generated.
-     * 
+     *
      * @var string
      */
     protected $useCaseDokuWikiTemplate = 'data/templates/use_case_doku_wiki_template.txt';
-    
+
     /**
      * Use case type entity class name
      *
      * @var string
      */
     protected $typeEntityClass = 'DlcUseCase\Entity\Type';
-    
+
     /**
      * Use case priority entity class name
      *
      * @var string
      */
     protected $priorityEntityClass = 'DlcUseCase\Entity\Priority';
-    
+
     /**
      * Default number of items per page
-     * 
+     *
      * @var int
      */
     protected $defaultItemsPerPage = 15;
-    
+
     /**
      * Getter for $rootCategoryId
      *
@@ -252,6 +259,59 @@ class ModuleOptions extends AbstractOptions
     public function setUseCaseEntityClass($useCaseEntityClass)
     {
         $this->useCaseEntityClass = $useCaseEntityClass;
+        return $this;
+    }
+
+    /**
+     * Getter for $useCaseDokuWikiTemplatePlaceholders
+     *
+     * @return multitype: $useCaseDokuWikiTemplatePlaceholders
+     */
+    public function getUseCaseDokuWikiTemplatePlaceholders()
+    {
+        if (null === $this->useCaseDokuWikiTemplatePlaceholders) {
+            $this->useCaseDokuWikiTemplatePlaceholders = array(
+                '#NAME#'         => 'name',
+                '#TYPE#'         => function ($entity, $view) {
+                    return $entity->getType()->getName();
+                },
+                '#CATEGORY#'     => 'categoryTitle',
+                '#DESCRIPTION#'  => 'description',
+                '#PRIORITY#'     => 'priorityName',
+                '#DETAILS#'      => 'details',
+                '#COMMENT#'      => 'comment',
+                '#INPUT_DATA#'   => 'inputData',
+                '#OUTPUT_DATA#'  => 'outputData',
+                '#DEPENDENCIES#' => function ($entity, $view) {
+                    $dependencies =  $entity->getDependencies();
+                    $depString    = '';
+                    foreach ($dependencies as $dependency) {
+                        $depString .= '  * (' . $dependency->getType() . ') ' . $dependency->getToNode()->getName() . PHP_EOL;
+                    }
+                    return $depString;
+                },
+                '#LINK_TO_USE_CASES_APP#' => function ($entity, $view) {
+                    $link = isset($_SERVER['HTTPS']) ? 'https://' : 'http://'
+                          . $_SERVER['HTTP_HOST']
+                          . $view->url('dlcusecase/show', array('id' => $entity->getId()));
+
+                    return $link;
+                },
+            );
+        }
+        return $this->useCaseDokuWikiTemplatePlaceholders;
+    }
+
+    /**
+     * Setter for $useCaseDokuWikiTemplatePlaceholders
+     *
+     * @param  multitype: $useCaseDokuWikiTemplatePlaceholders
+     * @return ModuleOptions
+     */
+    public function setUseCaseDokuWikiTemplatePlaceholders(
+            $useCaseDokuWikiTemplatePlaceholders)
+    {
+        $this->useCaseDokuWikiTemplatePlaceholders = $useCaseDokuWikiTemplatePlaceholders;
         return $this;
     }
 
