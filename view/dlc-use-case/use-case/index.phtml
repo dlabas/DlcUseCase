@@ -52,7 +52,7 @@ $displayProperties = array(
               . '</a>'
               . '&nbsp;';
 
-        $wikiPage = $this->dlcRenderWikiTemplate()->render($entity);
+        $wikiPage = $view->dlcRenderWikiTemplate()->render($entity);
 
         if ($wikiPage) {
             $html .= '<a href="#wikiPageModal_' . $entity->getId() . '" role="button" data-toggle="modal" title="Show generated wiki page for ' . $view->escapeHtml($entity->getName()) . '">'

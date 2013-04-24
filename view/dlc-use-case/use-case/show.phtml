@@ -60,7 +60,7 @@ echo $this->partial('dlc-use-case/partials/header.phtml', array(
                 ?>
                 <?php if ($fieldName == 'link'): ?>
                     <dt><?php echo $this->translate($fieldLabel) ?></dt>
-                    <dd><pre><a href="<?php echo $this->escapeUrl($this->entity->getLink()) ?>" target="_blank"><?php echo $this->escapeUrl($this->entity->getLink()) ?></a></pre></dd>
+                    <dd><pre><a href="<?php echo $this->entity->getLink() ?>" target="_blank"><?php echo $this->entity->getLink() ?></a></pre></dd>
                 <?php else: ?>
                     <dt><?php echo $this->translate($fieldLabel) ?></dt>
                     <dd><pre><?php echo $this->escapeHtml($value) ?></pre></dd>
