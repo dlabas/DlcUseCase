@@ -1,4 +1,4 @@
-<?php 
+<?php
 if (is_string($this->title)) {
     $this->title = array(
         array('label' => $this->title)
@@ -29,7 +29,7 @@ if (is_string($this->title)) {
 
 <div class="row">
     <div class="span1">
-      <img class="media-object" data-src="holder.js/64x64" alt="64x64" style="width: 64px; height: 64px;" src="<?php echo $this->image; ?>">
+      <img class="media-object" data-src="holder.js/64x64" alt="64x64" style="width: 64px; height: 64px;" src="<?php echo $this->basePath($this->image); ?>">
     </div>
     <div class="span11">
         <h2>
@@ -50,7 +50,7 @@ if (is_string($this->title)) {
         </div>
     </div-->
 </div>
-<!-- 
+<!--
 <div class="row">
     <div class="span12">
         <?php foreach ($this->actions as $action): ?>
@@ -60,7 +60,7 @@ if (is_string($this->title)) {
 </div>
  -->
 <hr />
-<!-- 
+<!--
 <div class="row">
     <div class="span12">
         <p>
