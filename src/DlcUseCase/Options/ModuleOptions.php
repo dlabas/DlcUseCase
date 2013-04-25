@@ -51,6 +51,15 @@ class ModuleOptions extends AbstractOptions
     protected $displayDiagrammAs = 'both';
 
     /**
+     * Should the diagramm image be renderd (generated) in PHP or in JavaScript? (At the moment only for use case detail view)
+     *
+     * Possible values: php, javascript
+     *
+     * @var string
+     */
+    protected $renderDiagrammImageStrategy = 'javascript';
+
+    /**
      * Use case category entity class name
      *
      * @var string
@@ -193,6 +202,28 @@ class ModuleOptions extends AbstractOptions
     public function setDisplayDiagrammAs($displayDiagrammAs)
     {
         $this->displayDiagrammAs = $displayDiagrammAs;
+        return $this;
+    }
+
+    /**
+     * Getter for $renderDiagrammImageStrategy
+     *
+     * @return string $renderDiagrammImageStrategy
+     */
+    public function getRenderDiagrammImageStrategy()
+    {
+        return $this->renderDiagrammImageStrategy;
+    }
+
+    /**
+     * Setter for $renderDiagrammImageStrategy
+     *
+     * @param  string $renderDiagrammImageStrategy
+     * @return ModuleOptions
+     */
+    public function setRenderDiagrammImageStrategy($renderDiagrammImageStrategy)
+    {
+        $this->renderDiagrammImageStrategy = $renderDiagrammImageStrategy;
         return $this;
     }
 

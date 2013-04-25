@@ -28,20 +28,66 @@ echo $this->partial('dlc-use-case/partials/searchbar.phtml', array(
 // Define properties for entity table
 $displayProperties = array(
     '#'              => 'id',
-    'Name'           => 'name',
-    'Category' => function($entity, $view) {
-        return $entity->getCategory()->getTitle();
-    },
-    'Priority' => function($entity, $view) {
-        return $entity->getPriority()->getName();
-    },
-    'Type' => function($entity, $view) {
-        return $entity->getType()->getName();
-    },
-    'Name'           => 'name',
-    'Dependencies' => function($entity, $view) {
-        return $entity->getDependencies()->count();
-    },
+    'Name'           => array(
+        'orderBy'  => 'name',
+        'property' => function($entity, $view) {
+            $html = '<a href="' . $view->url('dlcusecase/show', array('id' => $entity->getId())) . '" title="Show ' . $view->escapeHtml($entity->getName()) . '">'
+                  . $view->escapeHtml($entity->getName())
+                  . '</a>';
+            return $html;
+        },
+    ),
+    'Category' => array(
+        'orderBy'  => 'category::name',
+        'property' => function($entity, $view) {
+            $category = $entity->getCategory();
+
+            if (null === $category) {
+                return '';
+            }
+
+            $html = '<a href="' . $view->url('dlccategory/show', array('id' => $category->getId())) . '" title="Show category ' . $view->escapeHtml($category->getTitle()) . '">'
+                    . $view->escapeHtml($category->getTitle())
+                    . '</a>';
+            return $html;
+        },
+    ),
+    'Priority' => array(
+        'orderBy'  => 'priority::name',
+        'property' => function($entity, $view) {
+            $priority = $entity->getPriority();
+
+            if (null === $priority) {
+                return '';
+            }
+
+            $html = '<a href="' . $view->url('dlcusecase/priority/show', array('id' => $priority->getId())) . '" title="Show priority ' . $view->escapeHtml($priority->getName()) . '">'
+                    . $view->escapeHtml($priority->getName())
+                    . '</a>';
+            return $html;
+        },
+    ),
+    'Type' => array(
+        'orderBy'  => 'type::name',
+        'property' => function($entity, $view) {
+            $type = $entity->getType();
+
+            if (null === $type) {
+                return '';
+            }
+
+            $html = '<a href="' . $view->url('dlcusecase/priority/show', array('id' => $type->getId())) . '" title="Show type ' . $view->escapeHtml($type->getName()) . '">'
+                    . $view->escapeHtml($type->getName())
+                    . '</a>';
+            return $html;
+        },
+    ),
+    'Dependencies' =>  array(
+        'orderBy'  => 'dependencies::count',
+        'property' => function($entity, $view) {
+            return $entity->getDependencies()->count();
+        },
+    ),
     '<!--ACTIONS-->' => function($entity, $view) {
         $html = '<a href="' . $view->url('dlcusecase/show', array('id' => $entity->getId())) . '" title="Show ' . $view->escapeHtml($entity->getName()) . '">'
               .     '<i class="icon-eye-open"></i>'

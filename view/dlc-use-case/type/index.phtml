@@ -1,4 +1,4 @@
-<?php 
+<?php
 $titles = array(
     array('label' => 'Use Case', 'href' => $this->url('dlcusecase', array())),
     array('label' => 'Type', 'href' => $this->url('dlcusecase/type', array())),
@@ -8,7 +8,7 @@ $actions = array(
     array('label' => 'Add new', 'icon' => 'plus', 'href' => $this->url('dlcusecase/type/add', array())),
 );
 
-// Render module page header 
+// Render module page header
 echo $this->partial('dlc-use-case/partials/header.phtml', array(
     'title'   => $titles,
     'image'   => '/img/no_thumbnail.png',
@@ -26,7 +26,21 @@ echo $this->partial('dlc-use-case/partials/searchbar.phtml', array(
 // Define properties for entity table
 $displayProperties = array(
     '#'              => 'id',
-    'Name'           => 'name',
+    'Name'           => array(
+        'orderBy'  => 'name',
+        'property' => function($entity, $view) {
+            $html = '<a href="' . $view->url('dlcusecase/type/show', array('id' => $entity->getId())) . '" title="Show ' . $view->escapeHtml($entity->getName()) . '">'
+                  . $view->escapeHtml($entity->getName())
+                  . '</a>';
+            return $html;
+        },
+    ),
+    'Use Cases'    => array(
+        'orderBy'  => 'name',
+        'property' => function($entity, $view) {
+            return $entity->getUseCases()->count();
+        },
+    ),
     '<!--ACTIONS-->' => function($entity, $view) {
         $html = '<a href="' . $view->url('dlcusecase/type/show', array('id' => $entity->getId())) . '" title="Show ' . $view->escapeHtml($entity->getName()) . '">'
               .     '<i class="icon-eye-open"></i>'

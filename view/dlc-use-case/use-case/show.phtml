@@ -107,6 +107,7 @@ echo $this->partial('dlc-use-case/partials/header.phtml', array(
     echo $this->partial('dlc-diagramm/partials/diagrammInTabs.phtml', array(
         'diagramm'  => $this->diagramm,
         'displayAs' => $this->options->getDisplayDiagrammAs(),
+        'strategy'  => $this->options->getRenderDiagrammImageStrategy(),
         'dataTab'   => array(
             'label' => 'Use case data',
             'data'  => $this->placeholder('useCaseData'),

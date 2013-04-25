@@ -1,17 +1,19 @@
 <div class="row">
 
     <div class="span12">
-    
+
         <table class="table table-striped">
             <thead>
                 <tr>
                     <?php foreach ($this->displayProperties as $label => $property): ?>
-                        <?php 
+                        <?php
                             if (is_string($property)) {
                                 $orderBy = $property;
+                            } elseif (is_array($property) && isset($property['orderBy'])) {
+                                $orderBy = $property['orderBy'];
                             }
-                            
-                            if ($this->orderBy == $property){
+
+                            if ($this->orderBy == $orderBy){
                                 if ($this->sort == 'DESC') {
                                     $sort = null;
                                 } else {
@@ -20,10 +22,10 @@
                             } else {
                                 $sort = null;
                             }
-                            
+
                             $style = $label == '<!--ACTIONS-->' ? ' width="70px;"' : '';
                             $label = $label == '<!--ACTIONS-->' ? ' ' : $label;
-                            
+
                         ?><th<?php echo $style ?>><a href="<?php echo $this->url($this->route, array('page' => 1), array('query' => array('query' => $this->query, 'orderBy' => $orderBy, 'sort' => $sort))) ?>" title="Sort by <?php echo $this->escapeHtml($label) ?>"><?php echo $this->escapeHtml($label) ?></a>
                         </th>
                     <?php endforeach; ?>
@@ -33,6 +35,9 @@
                 <?php foreach($this->entities as $entity): ?>
                     <tr>
                         <?php foreach ($this->displayProperties as $property): ?>
+                            <?php if (is_array($property) && isset($property['property'])) {
+                                $property = $property['property'];
+                            } ?>
                             <td><?php if (is_callable($property)): ?>
                                 <?php echo $property($entity, $this) ?>
                             <?php else: ?>
@@ -43,6 +48,6 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-        
+
     </div>
 </div>
