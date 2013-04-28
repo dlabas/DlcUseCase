@@ -21,21 +21,21 @@ class DependencyFieldset extends AbstractInputFilterProvidingFieldset
         if ($values['toNode'] == '') {
             return null;
         }
-        
+
         return parent::bindValues($values);
     }
-    
+
     public function setObject($object)
     {
         parent::setObject($object);
-        
+
         if ($object->getToNode()) {
             $this->get('toNode')->setValue($object->getToNode()->getId());
         }
-        
+
         return $this;
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see \Zend\Form\Element::init()
@@ -43,10 +43,10 @@ class DependencyFieldset extends AbstractInputFilterProvidingFieldset
     public function init()
     {
         parent::init();
-        
+
         $useCaseClass          = $this->getOptions()->getUseCaseEntityClass();
         $dependencyEntityClass = $this->getOptions()->getDependencyEntityClass();
-        
+
         $this->add(array(
             'type' => 'Zend\Form\Element\Hidden',
             'name' => 'id',
@@ -57,7 +57,7 @@ class DependencyFieldset extends AbstractInputFilterProvidingFieldset
                 'required' => false,
             )
         ));
-        
+
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',
             'name' => 'type',
@@ -68,9 +68,9 @@ class DependencyFieldset extends AbstractInputFilterProvidingFieldset
                 'value_options' => $dependencyEntityClass::getAvailableTypesStatic(),
             ),
         ));
-        
+
         $this->byName['type']->setValue($dependencyEntityClass::TYPE_ASSOCIATION);
-        
+
         $this->add(array(
             'type' => 'DlcDoctrine\Form\Element\ObjectSelect',
             'name' => 'toNode',
@@ -87,18 +87,20 @@ class DependencyFieldset extends AbstractInputFilterProvidingFieldset
                     'name'   => 'findBy',
                     'params' => array(
                         'criteria' => array(),
-                        'orderBy' => array('name' => 'ASC'),
+                        'orderBy' => array(
+                            'id' => 'ASC'
+                        ),
                     ),
                 ),
             ),
         ));
-        
+
         $hydrator = $this->getServiceLocator()->get('dlcusecase_dependency_hydrator');
-        
+
         $this->setHydrator($hydrator);
         $this->setObject(new $dependencyEntityClass());
     }
-    
+
     /**
      * @return array
      */

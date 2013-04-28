@@ -19,9 +19,11 @@ echo $this->partial('dlc-use-case/partials/header.phtml', array(
 
 // Render searchbar
 echo $this->partial('dlc-use-case/partials/searchbar.phtml', array(
-    'route' => 'dlcusecase',
-    'query' => $this->query,
-    'actions' => $actions,
+    'route'      => 'dlcusecase',
+    'query'      => $this->query,
+    'actions'    => $actions,
+    'options'    => $this->options,
+    'filterForm' => $this->filterForm,
 ));
 
 

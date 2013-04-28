@@ -385,6 +385,13 @@ return array(
         ),
     ),
 
+    'session' => array(
+        'use_cookies'      => true,
+        'use_only_cookies' => true,
+        'cookie_httponly'  => true,
+        'name'             => 'DLCUSECASE',
+    ),
+
     'view_helpers' => array(
         'invokables' => array(
         ),

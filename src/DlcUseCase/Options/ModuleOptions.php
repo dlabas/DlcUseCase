@@ -118,6 +118,13 @@ class ModuleOptions extends AbstractOptions
     protected $defaultItemsPerPage = 15;
 
     /**
+     * Filter modal partial view script
+     *
+     * @var string
+     */
+    protected $filterModalViewScript = 'dlc-use-case/partials/filterModal.phtml';
+
+    /**
      * Getter for $rootCategoryId
      *
      * @return number $rootCategoryId
@@ -432,4 +439,26 @@ class ModuleOptions extends AbstractOptions
         $this->defaultItemsPerPage = $defaultItemsPerPage;
         return $this;
     }
+    /**
+     * Getter for $filterModalViewScript
+     *
+     * @return string $filterModalViewScript
+     */
+    public function getFilterModalViewScript()
+    {
+        return $this->filterModalViewScript;
+    }
+
+    /**
+     * Setter for $filterModalViewScript
+     *
+     * @param  string $filterModalViewScript
+     * @return ModuleOptions
+     */
+    public function setFilterModalViewScript($filterModalViewScript)
+    {
+        $this->filterModalViewScript = $filterModalViewScript;
+        return $this;
+    }
+
 }

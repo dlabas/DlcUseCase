@@ -1,26 +1,26 @@
 <div class="navbar">
   <div class="navbar-inner">
-    
+
     <form class="navbar-search pull-left" action="<?php echo $this->url($this->route) ?>" method="GET">
       <input name="query" type="text" class="search-query" placeholder="Search" value="<?php echo $this->escapeHtml($this->query) ?>">
     </form>
-    
+
     <?php
-        /*if (isset($this->filterForm)) {
-            echo $this->partial($this->options->filterModalViewScript, array(
-                'route' => $this->route,
-                'query' => $this->query,
-                'filterForm' => $this->filterForm
+        if (isset($this->filterForm)) {
+            echo $this->partial($this->options->getFilterModalViewScript(), array(
+                'route'      => $this->route,
+                'query'      => 'query=' . $this->query,
+                'form' => $this->filterForm
             ));
-        }*/
+        }
     ?>
     <?php if (isset($this->actions)):?>
         <?php foreach ($this->actions as $action): ?>
     <ul class="nav pull-right">
         <li>
-        
+
                 <a href="<?php echo $this->escapeHtml($action['href']) ?>"><i class="icon-<?php echo $this->escapeHtml($action['icon']) ?>"></i></a>
-            
+
         </li>
     </ul>
     <?php endforeach; ?>
@@ -29,4 +29,4 @@
 </div>
 
 
- 
+

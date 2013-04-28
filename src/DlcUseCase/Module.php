@@ -2,9 +2,35 @@
 namespace DlcUseCase;
 
 use DlcBase\Module\AbstractModule;
+use Zend\Mvc\ModuleRouteListener;
+use Zend\Session\Config\SessionConfig;
+use Zend\Session\SessionManager;
+use Zend\Session\Container;
 
 class Module extends AbstractModule
 {
+    public function onBootstrap(\Zend\EventManager\EventInterface $e)
+    {
+        $sm = $e->getApplication()->getServiceManager();
+
+        $config = $sm->get('session_config');
+
+        $storage = null;
+        if ($sm->canCreate('session_storage', false)) {
+            $storage = $sm->get('session_storage');
+        }
+
+        $saveHandler = null;
+        if ($sm->canCreate('session_save_handler', false)) {
+            $saveHandler = $sm->get('session_save_handler');
+        }
+
+        $sessionManager = new SessionManager($config, $storage, $saveHandler);
+        Container::setDefaultManager($sessionManager);
+
+        $sessionManager->start();
+    }
+
     public function getViewHelperConfig()
     {
         return array(
@@ -41,6 +67,7 @@ class Module extends AbstractModule
                 'dlcusecase_priority_service'      => 'DlcUseCase\Service\Priority',
                 'dlcusecase_type_mapper'           => 'DlcUseCase\Mapper\Type',
                 'dlcusecase_type_service'          => 'DlcUseCase\Service\Type',
+                'dlcusecase_usecasefilter_form'    => 'DlcUseCase\Form\UseCaseFilter',
                 'dlcusecase_usecase_mapper'        => 'DlcUseCase\Mapper\UseCase',
                 'dlcusecase_usecase_service'       => 'DlcUseCase\Service\UseCase',
                 'dlcusecase_setup_service'         => 'DlcUseCase\Service\Setup',
@@ -86,6 +113,16 @@ class Module extends AbstractModule
                             $options->getUseCaseEntityClass()
                     );
                     return $hydrator;
+                },
+                'sessionconfig' => function ($sm) {
+                    $config = $sm->get('Config');
+
+                    $sessionConfig = new SessionConfig();
+                    if (isset($config['session'])) {
+                        $sessionConfig->setOptions($config['session']);
+                    }
+
+                    return $sessionConfig;
                 },
             ),
         );

@@ -2,6 +2,7 @@
 namespace DlcUseCase\Controller;
 
 use DlcBase\Controller\AbstractEntityActionController;
+use Zend\Session\Container;
 use Zend\Stdlib\ResponseInterface as Response;
 use Zend\View\Model\ViewModel;
 
@@ -16,6 +17,62 @@ class UseCaseController extends AbstractEntityActionController
             $this->routeIdentifierPrefix = strtolower($this->getModuleNamespace());
         }
         return $this->routeIdentifierPrefix;
+    }
+
+    public function indexAction()
+    {
+        $filterForm = $this->getServiceLocator()->get('dlcusecase_usecasefilter_form');
+        //Get post data
+        $post = $this->params()->fromPost();
+        //Session stuff
+        $sessionManager      = Container::getDefaultManager();
+        $sessionStorage      = $sessionManager->getStorage();
+        $sessionStorageArray = $sessionStorage->toArray();
+
+        if (isset($post['filter'])) {
+            $filter = $post['filter'];
+        } else {
+            if (isset($sessionStorageArray['dlcusecase_filter'])) {
+                $filter = $sessionStorageArray['dlcusecase_filter'];
+            } else {
+                $filter = array();
+            }
+        }
+
+        //Set filter form data
+        $formData = array();
+        foreach ($filter as $key => $value) {
+            $formData['filter[' . $key . ']'] = $value;
+        }
+        $filterForm->setData($formData);
+
+        $sessionStorageArray['dlcusecase_filter'] = $filter;
+        $sessionStorage->fromArray($sessionStorageArray);
+
+        $query = (string) $this->params()->fromQuery('query', null);
+        $query = strlen($query) > 0 ? $query : null;
+
+        $orderBy = (string) $this->params()->fromQuery('orderBy', null);
+        $orderBy = strlen($orderBy) > 0 ? $orderBy : null;
+
+        $sort = (string) $this->params()->fromQuery('sort', null);
+        $sort = strlen($sort) > 0 ? $sort : null;
+
+        $page  = (int) $this->params()->fromRoute('page', 1);
+        $limit = $this->getOptions()->getDefaultItemsPerPage();
+
+        $entities = $this->getService()->pagination($page, $limit, $query, $orderBy, $sort, $filter);
+
+        $view = new ViewModel(array(
+            'options'    => $this->getOptions(),
+            'entities'   => $entities,
+            'query'      => $query,
+            'orderBy'    => $orderBy,
+            'sort'       => $sort,
+            'filterForm' => $filterForm,
+        ));
+
+        return $view;
     }
 
     public function diagrammAction()
