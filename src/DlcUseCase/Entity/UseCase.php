@@ -25,102 +25,102 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
      * @var int
      */
     protected $id;
-    
+
     /**
      * @ORM\Column(type="string",length=100,unique=false)
      * @var string
      */
     protected $name;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Type")
      * @ORM\JoinColumn(name="type_id", referencedColumnName="id")
      * @var Type
      */
     protected $type;
-    
+
     /**
-     * Optional field: category 
-     * 
+     * Optional field: category
+     *
      * @ORM\ManyToOne(targetEntity="DlcCategory\Entity\CategoryInterface")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      * @var \DlcCategory\Entity\Category
      */
     protected $category;
-    
+
     /**
-     * Optional field: priority 
-     * 
+     * Optional field: priority
+     *
      * @ORM\ManyToOne(targetEntity="Priority")
      * @ORM\JoinColumn(name="priority_id", referencedColumnName="id")
      * @var Priority
      */
     protected $priority;
-    
+
     /**
-     * Optional field: link 
-     * 
+     * Optional field: link
+     *
      * @ORM\Column(type="string",nullable=true)
      * @var string
      */
     protected $link;
-    
+
     /**
-     * Optional field: note 
-     * 
+     * Optional field: note
+     *
      * @ORM\Column(type="string",nullable=true)
      * @var string
      */
     protected $note;
-    
+
     /**
-     * Optional field: description 
-     * 
+     * Optional field: description
+     *
      * @ORM\Column(type="text",nullable=true)
      * @var string
      */
     protected $description;
-    
+
     /**
-     * Optional field: details 
-     * 
+     * Optional field: details
+     *
      * @ORM\Column(type="text",nullable=true)
      * @var string
      */
     protected $details;
-    
+
     /**
-     * Optional field: comment 
-     * 
+     * Optional field: comment
+     *
      * @ORM\Column(type="text",nullable=true)
      * @var string
      */
     protected $comment;
-    
+
     /**
      * Optional field: input data
-     * 
+     *
      * @ORM\Column(name="input_data",type="text",nullable=true)
      * @var string
      */
     protected $inputData;
-    
+
     /**
      * Optional field: output data
-     * 
+     *
      * @ORM\Column(name="output_data",type="text",nullable=true)
      * @var string
      */
     protected $outputData;
-    
+
     /**
      * Dependencies of this node
-     * 
-     * @ORM\OneToMany(targetEntity="Dependency", mappedBy="fromNode",cascade={"persist", "remove"})
+     *
+     * @ORM\OneToMany(targetEntity="Dependency", mappedBy="fromNode", cascade={"persist"}, orphanRemoval=true)
      * @var ArrayObject
      */
     protected $dependencies;
-    
+
     /**
      * Dependencies of this node
      *
@@ -128,14 +128,14 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
      * @var ArrayObject
      */
     protected $usedByDependencies;
-    
+
     /**
      * Generated wiki page
-     * 
+     *
      * @var string
      */
     protected $generatedWikiPage;
-    
+
     /**
      * The constructor
      */
@@ -188,23 +188,23 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         $this->name = $name;
         return $this;
     }
-    
+
     /**
      * Returns the extended name
-     * 
+     *
      * @return string
      */
     public function getExtendedName()
     {
         $extendedName = $this->getType()->getName();
-        
+
         $catTitle = $this->getCategoryTitle();
         if ($catTitle !== null) {
             $extendedName .= '-' . $this->getCategoryTitle();
         }
-        
+
         $extendedName .= '-' . $this->getName();
-        
+
         return $extendedName;
     }
 
@@ -251,20 +251,20 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         $this->category = $category;
         return $this;
     }
-    
+
     /**
      * Returns the title of it's category or null if category is not set
-     * 
+     *
      * @return NULL|string
      */
     public function getCategoryTitle()
     {
         $cat = $this->getCategory();
-        
+
         if (null === $cat) {
             return null;
         }
-        
+
         return $cat->getTitle();
     }
 
@@ -289,7 +289,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         $this->priority = $priority;
         return $this;
     }
-    
+
     /**
      * Returns the name of it's priority or null if priority is not set
      *
@@ -298,14 +298,14 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     public function getPriorityName()
     {
         $priority = $this->getPriority();
-        
+
         if (null === $priority) {
             return null;
         }
-        
+
         return $priority->getName();
     }
-    
+
     /**
      * Getter for $link
      *
@@ -337,7 +337,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     {
         return $this->note;
     }
-    
+
     /**
      * Returns the background color of this note
      *
@@ -473,7 +473,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     /**
      * Getter for $dependencies
      *
-     * @return \Zend\Stdlib\ArrayObject $dependencies
+     * @return \Doctrine\Common\Collections\ArrayCollection $dependencies
      */
     public function getDependencies()
     {
@@ -483,7 +483,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     /**
      * Setter for $dependencies
      *
-     * @param  \Zend\Stdlib\ArrayObject $dependencies
+     * @param  \Doctrine\Common\Collections\ArrayCollection $dependencies
      * @return UseCase
      */
     public function setDependencies($dependencies)
@@ -491,7 +491,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         $this->dependencies = $dependencies;
         return $this;
     }
-    
+
     public function addDependencies($dependencies)
     {
         if ($dependencies instanceof ArrayCollection) {
@@ -503,22 +503,24 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
         } else {
             $this->getDependencies()->add($dependencies);
         }
-        
+
         return $this;
     }
-    
+
     public function removeDependencies($dependencies)
     {
         if ($dependencies instanceof ArrayCollection) {
             $entity = $dependencies->current();
             while ($entity) {
-                $this->getDependencies()->remove($entity);
+                if (!$this->getDependencies()->removeElement($entity)) {
+                    throw new \RuntimeException('Error while removing a dependency');
+                }
                 $entity = $dependencies->next();
             }
         } else {
             $this->getDependencies()->remove($dependencies);
         }
-    
+
         return $this;
     }
 
@@ -553,7 +555,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     {
         return $this->getId();
     }
-    
+
     /**
      * Returns the name of this node
      *
@@ -562,14 +564,14 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     public function getNodeName()
     {
         /*$nodeName = $this->getType() ->getName()
-                  . '-' 
-                  . $this->getCategory()->getTitle() 
-                  . '-' 
+                  . '-'
+                  . $this->getCategory()->getTitle()
+                  . '-'
                   . $this->getName();*/
-        
+
         return $this->getExtendedName();
     }
-    
+
     /**
      * Returns the node type
      *
@@ -579,7 +581,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     {
         return DiagrammNode::TYPE_USE_CASE;
     }
-    
+
     /**
      * Getter for $generatedWikiPage
      *
@@ -589,7 +591,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     {
         return $this->generatedWikiPage;
     }
-    
+
     /**
      * Setter for $generatedWikiPage
      *
@@ -609,7 +611,7 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
     {
         parent::onPrePersist();
     }
-    
+
     /**
      * @ORM\PreUpdate
      */

@@ -30,5 +30,11 @@ class EditUseCase extends BaseUseCase
         if ($useCase->getPriority() != null) {
             $this->byName['priority']->setValue($useCase->getPriority()->getId());
         }
+
+        $dependenciesCollection = $this->byName['dependencies'];
+
+        foreach ($dependenciesCollection->getFieldsets() as $fieldset) {
+            $fieldset->byName['toNode']->setEmptyOption('Delete this dependency');
+        }
     }
 }
