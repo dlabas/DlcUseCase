@@ -115,7 +115,7 @@ class ModuleOptions extends AbstractOptions
      *
      * @var int
      */
-    protected $defaultItemsPerPage = 15;
+    protected $defaultItemsPerPage = 25;
 
     /**
      * Filter modal partial view script

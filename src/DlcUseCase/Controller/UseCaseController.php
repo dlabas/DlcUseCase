@@ -46,9 +46,6 @@ class UseCaseController extends AbstractEntityActionController
         }
         $filterForm->setData($formData);
 
-        $sessionStorageArray['dlcusecase_filter'] = $filter;
-        $sessionStorage->fromArray($sessionStorageArray);
-
         $query = (string) $this->params()->fromQuery('query', null);
         $query = strlen($query) > 0 ? $query : null;
 
@@ -59,7 +56,17 @@ class UseCaseController extends AbstractEntityActionController
         $sort = strlen($sort) > 0 ? $sort : null;
 
         $page  = (int) $this->params()->fromRoute('page', 1);
-        $limit = $this->getOptions()->getDefaultItemsPerPage();
+
+        $limit = $this->params()->fromQuery('itemsPerPage', null);
+        if ($limit === null && !isset($sessionStorageArray['dlcusecase_limit'])) {
+            $limit = $this->getOptions()->getDefaultItemsPerPage();
+        } elseif ($limit === null && isset($sessionStorageArray['dlcusecase_limit'])) {
+            $limit = $sessionStorageArray['dlcusecase_limit'];
+        }
+
+        $sessionStorageArray['dlcusecase_filter'] = $filter;
+        $sessionStorageArray['dlcusecase_limit']  = $limit;
+        $sessionStorage->fromArray($sessionStorageArray);
 
         $entities = $this->getService()->pagination($page, $limit, $query, $orderBy, $sort, $filter);
 

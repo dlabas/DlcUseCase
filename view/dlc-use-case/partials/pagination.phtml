@@ -1,18 +1,28 @@
 <?php if ($this->pageCount): ?>
 <div class="row-fluid module-row ">
-    <div class="span12">
+    <div class="span4">
         <div class="row-fluid">
-            <div class="pagination pull-right">
+            <div class="pagination pagination-small">
+                <span style="font-size: 12px;">
+                    <strong>Items:</strong> <?php echo $this->firstItemNumber; ?>-<?php echo $this->lastItemNumber; ?> of <?php echo $this->totalItemCount; ?>,
+                    <strong>Page:</strong> <?php echo $this->current ?> of <?php echo $this->pageCount ?>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="span4">
+        <div class="row-fluid">
+            <div class="pagination pagination-small pagination-centered">
                 <ul>
                     <?php if(isset($this->previous)): ?>
                     <!-- First page link -->
                     <li>
-                        <a href="<?php echo $this->url($this->route, array('page' => $this->first), array('query' => $query)); ?>">&lt;&lt; First</a>
+                        <a href="<?php echo $this->url($this->route, array('page' => $this->first), array('query' => $query)); ?>" title="First page">&lt;&lt;<!-- First--></a>
                     </li>
 
                     <!-- Previous page link -->
                     <li>
-                        <a href="<?php echo $this->url($this->route, array('page' => $this->previous), array('query' => $query)); ?>">Previous &gt;</a>
+                        <a href="<?php echo $this->url($this->route, array('page' => $this->previous), array('query' => $query)); ?>" title="Previous page">&lt;<!-- Previous--></a>
                     </li>
                     <?php endif; ?>
 
@@ -20,21 +30,35 @@
                     <!-- Numbered page links -->
                     <?php foreach ($this->pagesInRange as $page): ?>
                     <li<?php echo ($page == $this->current) ? ' class="active"' : ''; ?>>
-                        <a href="<?php echo $this->url($this->route, array('page' => $page), array('query' => $query)); ?>"><?php echo $page; ?></a>
+                        <a href="<?php echo $this->url($this->route, array('page' => $page), array('query' => $query)); ?>" title="Page <?php echo $page; ?>"><?php echo $page; ?></a>
                     </li>
                     <?php endforeach; ?>
 
                     <?php if(isset($this->next)): ?>
                     <!-- Next page link -->
                     <li>
-                        <a href="<?php echo $this->url($this->route, array('page' => $this->next), array('query' => $query)); ?>">Next &gt;</a>
+                        <a href="<?php echo $this->url($this->route, array('page' => $this->next), array('query' => $query)); ?>" title="Next page"><!-- Next  -->&gt;</a>
                     </li>
 
                     <!-- Last page link -->
                     <li>
-                        <a href="<?php echo $this->url($this->route, array('page' => $this->last), array('query' => $query)); ?>">Last &gt;&gt;</a>
+                        <a href="<?php echo $this->url($this->route, array('page' => $this->last), array('query' => $query)); ?>" title="Last page"><!--Last -->&gt;&gt;</a>
                     </li>
                     <?php endif; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="span4">
+        <div class="row-fluid">
+            <div class="pagination pagination-small pagination-right">
+                <ul>
+                    <li><span style="font-size: 12px; border-bottom-width: 0px; border-top-width: 0px; border-left-width: 0px;"><strong>Items/Page:</strong></span></li>
+                    <li<?php echo (25 == $this->itemCountPerPage) ? ' class="active"' : ''; ?>><a href="<?php echo $this->url($this->route, array('page' => $this->first), array('query' => $query+array('itemsPerPage' => 25))); ?>" title="Show 25 Items per page">25</a></li>
+                    <li<?php echo (50 == $this->itemCountPerPage) ? ' class="active"' : ''; ?>><a href="<?php echo $this->url($this->route, array('page' => $this->first), array('query' => $query+array('itemsPerPage' => 50))); ?>" title="Show 50 Items per page">50</a></li>
+                    <li<?php echo (100 == $this->itemCountPerPage) ? ' class="active"' : ''; ?>><a href="<?php echo $this->url($this->route, array('page' => $this->first), array('query' => $query+array('itemsPerPage' => 100))); ?>" title="Show 100 Items per page">100</a></li>
+                    <li<?php echo (250 == $this->itemCountPerPage) ? ' class="active"' : ''; ?>><a href="<?php echo $this->url($this->route, array('page' => $this->first), array('query' => $query+array('itemsPerPage' => 250))); ?>" title="Show 250 Items per page">250</a></li>
+                    <li<?php echo (500 == $this->itemCountPerPage) ? ' class="active"' : ''; ?>><a href="<?php echo $this->url($this->route, array('page' => $this->first), array('query' => $query+array('itemsPerPage' => 500))); ?>" title="Show 500 Items per page">500</a></li>
                 </ul>
             </div>
         </div>
