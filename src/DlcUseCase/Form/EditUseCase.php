@@ -34,7 +34,9 @@ class EditUseCase extends BaseUseCase
         $dependenciesCollection = $this->byName['dependencies'];
 
         foreach ($dependenciesCollection->getFieldsets() as $fieldset) {
-            $fieldset->byName['toNode']->setEmptyOption('Delete this dependency');
+            if ($fieldset->byName['toNode']->getValue() != null) {
+                $fieldset->byName['toNode']->setEmptyOption('Delete this dependency');
+            }
         }
     }
 }
