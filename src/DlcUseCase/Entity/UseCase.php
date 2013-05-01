@@ -518,7 +518,9 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
                 $entity = $dependencies->next();
             }
         } else {
-            $this->getDependencies()->remove($dependencies);
+            if (!$this->getDependencies()->removeElement($dependencies)) {
+                throw new \RuntimeException('Error while removing a dependency');
+            }
         }
 
         return $this;
