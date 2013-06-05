@@ -174,6 +174,17 @@ return array(
                         ),
                         'may_terminate' => true,
                     ),
+                    'import-wiki-txt-files' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route'    => '/import-wiki-txt-files',
+                            'defaults' => array(
+                                'controller' => 'dlcusecase',
+                                'action'     => 'importWikiTxtFiles',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                    ),
                     /**
                      * PRIORITY ROUTES
                      */

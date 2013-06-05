@@ -2,6 +2,7 @@
 namespace DlcUseCase\Service;
 
 use DlcBase\Service\AbstractEntityService;
+use DlcDiagramm\Diagramm\Dependency;
 use DlcDiagramm\Diagramm\UseCase as UseCaseDiagramm;
 use DlcDiagramm\Service\Diagramm;
 use DlcDiagramm\Service\Diagramm as DiagrammService;
@@ -143,5 +144,156 @@ class UseCase extends AbstractEntityService
         $this->getMapper()->save($entity);
 
         return $entity;
+    }
+
+    public function deleteAll()
+    {
+        $this->getMapper()->deleteAll();
+    }
+
+    /**
+     * Import doku wiki txt files from given directory
+     */
+    public function importWikiTxtFiles()
+    {
+        $options          = $this->getOptions();
+        $mapper           = $this->getMapper();
+        $serviceLocator   = $this->getServiceLocator();
+        $categoryMapper   = $serviceLocator->get('dlccategory_category_mapper');
+        $categoryMap      = array();
+        $priorityService  = $serviceLocator->get('dlcusecase_priority_service');
+        $priorityMap      = array();
+        $typeService      = $serviceLocator->get('dlcusecase_type_service');
+        $typeMap          = array();
+        $entityClass      = $mapper->getEntityClass();
+        $depClass         = $options->getDependencyEntityClass();
+        $objectManager    = $mapper->getObjectManager();
+        $simpleProperties = $objectManager->getClassMetadata($entityClass)
+                                          ->getFieldNames();
+
+        $categoryService  = $serviceLocator->get('dlccategory_category_service');
+        $rootCategoryNode = $categoryService->getRootCategoryNode($options->getRootCategoryId());
+
+        //Drop existing use cases before importing new use cases?
+        if ($options->getDropUseCasesBeforeImport()) {
+            $this->deleteAll();
+        }
+
+        $dir = $options->getUseCaseDokuWikiTxtFilesDir();
+
+        $dokuWikiUrl      = $options->getDokuWikiUrl();
+        $dokuWikiIdPrefix = $options->getDokuWikiIdPrefix();
+
+        $excludeFilenames = $options->getExcludeFilenamesFromImport();
+
+        $txtPositions = $options->getTxtImportPositions();
+
+        $entityMap    = array();
+        $dependencies = array();
+
+        $objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($objects as $name => $object) {
+            if ($object->isFile() && $object->getExtension() == 'txt' && !in_array($object->getFilename(), $excludeFilenames)) {
+
+                $entity = new $entityClass();
+
+                $dokuWikiId = $dokuWikiIdPrefix . str_replace('/', ':', substr($name, strlen($dir), -4));
+
+                $entityMap[$dokuWikiId] = $entity;
+
+                $dokuWikiLink = $dokuWikiUrl . '?id=' . $dokuWikiId;
+
+                $entity->setLink($dokuWikiLink);
+
+                $contents = file_get_contents($name);
+
+                foreach ($txtPositions as $property => $positions) {
+                    //Start position
+                    $start = strpos($contents, $positions['start']) + strlen($positions['start']);
+                    //End position
+                    if (null === $positions['end']) {
+                        $end = strlen($contents);
+                    } else {
+                        $end = strpos($contents, $positions['end'])-$start;
+                    }
+
+                    $value = substr($contents, $start, $end);
+
+                    if (isset($positions['replace']) && is_array($positions['replace'])) {
+                        $value = str_replace($positions['replace']['search'], $positions['replace']['replace'], $value);
+                    }
+
+                    if (isset($positions['trim']) && $positions['trim'] === true) {
+                        $value = trim($value);
+                    }
+
+                    if (in_array($property, $simpleProperties)) {
+                        $entity->$property = $value;
+                    } elseif ($property == 'type') {
+                        if (!array_key_exists($value, $typeMap)) {
+                            $typeMap[$value] = $typeService->findOneByName($value);
+                        }
+                        $entity->setType($typeMap[$value]);
+                    } elseif ($property == 'category') {
+                        if (!array_key_exists($value, $categoryMap)) {
+                            $categoryMap[$value] = $categoryMapper->findOneByTitle($value);
+
+                            //If no categpry was found
+                            if (null === $categoryMap[$value]) {
+                                //Create new category
+                                $category = new \DlcCategory\Entity\Category();
+                                $category->setName(strtolower($value))
+                                         ->setTitle($value)
+                                         ->setDescription('Desc of ' . $value)
+                                         ->setThumbnail('/img/no_thumbnail.png');
+
+                                $categoryNode = $rootCategoryNode->addChild($category);
+
+                                $categoryMap[$value] = $category;
+                            }
+                        }
+                        $entity->setCategory($categoryMap[$value]);
+                    } elseif ($property == 'priority') {
+                        if (strlen($value) < 1) {
+                            $value = 'Normal';
+                        }
+                        if (!array_key_exists($value, $priorityMap)) {
+                            $priorityMap[$value] = $priorityService->findOneByName($value);
+                        }
+                        $entity->setPriority($priorityMap[$value]);
+                    } elseif ($property == 'dependencies') {
+                        if (preg_match_all('/[a-zA-Z0-9\-\_\:äöüÄÖÜ\ ]+/', $value, $matches)) {
+                            $dependencies[$dokuWikiId] = $matches[0];
+                        } else {
+                            $dependencies[$dokuWikiId] = array();
+                        }
+
+                    } else {
+                        \Zend\Debug\Debug::dump($value, $property);
+                    }
+                }
+
+                $objectManager->persist($entity);
+            }
+
+        }
+
+        //Add all dependencies
+        foreach ($dependencies as $wikiId => $dependencies) {
+            if (isset($entityMap[$wikiId])) {
+                foreach ($dependencies as $dependencyId) {
+                    if (isset($entityMap[$dependencyId])) {
+                        $dependency = new $depClass();
+                        $dependency->from($entityMap[$wikiId])
+                                   ->setType(Dependency::TYPE_ASSOCIATION)
+                                   ->to($entityMap[$dependencyId]);
+
+                        $entityMap[$wikiId]->addDependencies($dependency);
+                    }
+                }
+            }
+        }
+
+        $objectManager->flush();
     }
 }

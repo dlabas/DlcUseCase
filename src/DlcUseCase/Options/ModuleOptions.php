@@ -97,6 +97,124 @@ class ModuleOptions extends AbstractOptions
     protected $useCaseDokuWikiTemplate = 'data/templates/use_case_doku_wiki_template.txt';
 
     /**
+     * Directory of txt files from doku wiki for auto import
+     *
+     * @var string
+     */
+    protected $useCaseDokuWikiTxtFilesDir = 'data/usecases';
+
+    /**
+     *
+     * @var string
+     */
+    protected $dokuWikiUrl = 'https://intern.cuculus.net/wiki/doku.php';
+
+    /**
+     *
+     * @var string
+     */
+    protected $dokuWikiIdPrefix = 'team_core:zonos-core-mvc-concept:usecases';
+
+    /**
+     *
+     * @var bool
+     */
+    protected $dropUseCasesBeforeImport = true;
+
+    /**
+     *
+     * @var array
+     */
+    protected $excludeFilenamesFromImport = array('start.txt', 'template.txt', 'usecases.txt');
+
+    /**
+     *
+     * @var array
+     */
+    protected $txtImportPositions = array(
+        'name' => array(
+            'start' => '====== ',
+            'end'   => ' ======',
+            'trim'  => true,
+        ),
+        'type' => array(
+            'start'   => '===== Typ =====',
+            'end'     => '===== Kategorie =====',
+            'replace' => array(
+                'search'  => array(
+                    '*',
+                    '[[team_core:zonos-core-mvc-concept:usecases:business:start]]',
+                    '[[team_core:zonos-core-mvc-concept:usecases:system:start]]',
+                    '[[team_core:zonos-core-mvc-concept:usecases:business:portal-api:start]]',
+                    '[[team_core:zonos-core-mvc-concept:usecases:business:zcp-api:start]]',
+                    '[[team_core:zonos-core-mvc-concept:usecases:business:sap-api:start]]',
+                    '[[team_core:zonos-core-mvc-concept:usecases:business:file-based-imports:start]]',
+                    '[[team_core:zonos-core-mvc-concept:usecases:business:misc:start]]'
+                ),
+                'replace' => array(
+                    '',
+                    'Business Use Case',
+                    'System Use Case',
+                    'Business Use Case - Portal-API',
+                    'Business Use Case - ZCP API',
+                    'Business Use Case - SAP API',
+                    'Business Use Case - Dateibasierter Import',
+                    'Business Use Case - Verschiedenes'
+                ),
+            ),
+            'trim'    => true,
+        ),
+        'category'     => array(
+            'start'   => '===== Kategorie =====',
+            'end'     => '===== Beschreibung =====',
+            'replace' => array(
+                'search'  => array('*'),
+                'replace' => array(''),
+            ),
+            'trim'    => true,
+        ),
+        'description'  => array(
+            'start' => '===== Beschreibung =====',
+            'end'   => '===== Priorität =====',
+            'trim'  => false,
+        ),
+        'priority'     => array(
+            'start'   => '===== Priorität =====',
+            'end'     => '===== Details =====',
+            'replace' => array(
+                'search'  => array('*'),
+                'replace' => array(''),
+            ),
+            'trim'    => true,
+        ),
+        'details'      => array(
+            'start' => '===== Details =====',
+            'end'   => '===== Bemerkungen  ====='
+        ),
+        'comment'     => array(
+            'start' => '===== Bemerkungen  =====',
+            'end'   => '===== Eingehende Daten ====='
+        ),
+        'inputData'    => array(
+            'start' => '===== Eingehende Daten =====',
+            'end'   => '===== Ausgehende Daten ====='
+        ),
+        'outputData'   => array(
+            'start' => '===== Ausgehende Daten =====',
+            'end'   => '===== Abhängigkeiten zu anderen Use Cases ====='
+        ),
+        'dependencies' => array(
+            'start'   => '===== Abhängigkeiten zu anderen Use Cases =====',
+            'end'     => null,
+            'replace' => array(
+                'search'  => array('*'),
+                'replace' => array(''),
+            ),
+            'trim'    => true,
+        ),
+    );
+
+    /**
      * Use case type entity class name
      *
      * @var string
@@ -311,7 +429,11 @@ class ModuleOptions extends AbstractOptions
             $this->useCaseDokuWikiTemplatePlaceholders = array(
                 '#NAME#'         => 'name',
                 '#TYPE#'         => function ($entity, $view) {
-                    return $entity->getType()->getName();
+                    if ($entity->getType()) {
+                        return $entity->getType()->getName();
+                    } else {
+                        return '';
+                    }
                 },
                 '#CATEGORY#'     => 'categoryTitle',
                 '#DESCRIPTION#'  => 'description',
@@ -376,6 +498,138 @@ class ModuleOptions extends AbstractOptions
     }
 
     /**
+     * Getter for $useCaseDokuWikiTxtFilesDir
+     *
+     * @return string $useCaseDokuWikiTxtFilesDir
+     */
+    public function getUseCaseDokuWikiTxtFilesDir()
+    {
+        return $this->useCaseDokuWikiTxtFilesDir;
+    }
+
+    /**
+     * Setter for $useCaseDokuWikiTxtFilesDir
+     *
+     * @param  string $useCaseDokuWikiTxtFilesDir
+     * @return ModuleOptions
+     */
+    public function setUseCaseDokuWikiTxtFilesDir($useCaseDokuWikiTxtFilesDir)
+    {
+        $this->useCaseDokuWikiTxtFilesDir = $useCaseDokuWikiTxtFilesDir;
+        return $this;
+    }
+
+    /**
+     * Getter for $dokuWikiUrl
+     *
+     * @return string $dokuWikiUrl
+     */
+    public function getDokuWikiUrl()
+    {
+        return $this->dokuWikiUrl;
+    }
+
+    /**
+     * Getter for $dokuWikiIdPrefix
+     *
+     * @return string $dokuWikiIdPrefix
+     */
+    public function getDokuWikiIdPrefix()
+    {
+        return $this->dokuWikiIdPrefix;
+    }
+
+    /**
+     * Setter for $dokuWikiUrl
+     *
+     * @param  string $dokuWikiUrl
+     * @return ModuleOptions
+     */
+    public function setDokuWikiUrl($dokuWikiUrl)
+    {
+        $this->dokuWikiUrl = $dokuWikiUrl;
+        return $this;
+    }
+
+    /**
+     * Setter for $dokuWikiIdPrefix
+     *
+     * @param  string $dokuWikiIdPrefix
+     * @return ModuleOptions
+     */
+    public function setDokuWikiIdPrefix($dokuWikiIdPrefix)
+    {
+        $this->dokuWikiIdPrefix = $dokuWikiIdPrefix;
+        return $this;
+    }
+
+    /**
+     * Getter for $dropUseCasesBeforeImport
+     *
+     * @return boolean $dropUseCasesBeforeImport
+     */
+    public function getDropUseCasesBeforeImport()
+    {
+        return $this->dropUseCasesBeforeImport;
+    }
+
+    /**
+     * Getter for $excludeFilenamesFromImport
+     *
+     * @return multitype: $excludeFilenamesFromImport
+     */
+    public function getExcludeFilenamesFromImport()
+    {
+        return $this->excludeFilenamesFromImport;
+    }
+
+    /**
+     * Setter for $dropUseCasesBeforeImport
+     *
+     * @param  boolean $dropUseCasesBeforeImport
+     * @return ModuleOptions
+     */
+    public function setDropUseCasesBeforeImport($dropUseCasesBeforeImport)
+    {
+        $this->dropUseCasesBeforeImport = $dropUseCasesBeforeImport;
+        return $this;
+    }
+
+    /**
+     * Setter for $excludeFilenamesFromImport
+     *
+     * @param  multitype: $excludeFilenamesFromImport
+     * @return ModuleOptions
+     */
+    public function setExcludeFilenamesFromImport($excludeFilenamesFromImport)
+    {
+        $this->excludeFilenamesFromImport = $excludeFilenamesFromImport;
+        return $this;
+    }
+
+    /**
+     * Getter for $txtImportPositions
+     *
+     * @return multitype: $txtImportPositions
+     */
+    public function getTxtImportPositions()
+    {
+        return $this->txtImportPositions;
+    }
+
+    /**
+     * Setter for $txtImportPositions
+     *
+     * @param  multitype: $txtImportPositions
+     * @return ModuleOptions
+     */
+    public function setTxtImportPositions($txtImportPositions)
+    {
+        $this->txtImportPositions = $txtImportPositions;
+        return $this;
+    }
+
+    /**
      * Getter for $typeEntityClass
      *
      * @return string $typeEntityClass
@@ -418,6 +672,7 @@ class ModuleOptions extends AbstractOptions
         $this->priorityEntityClass = $priorityEntityClass;
         return $this;
     }
+
     /**
      * Getter for $defaultItemsPerPage
      *
@@ -439,6 +694,7 @@ class ModuleOptions extends AbstractOptions
         $this->defaultItemsPerPage = $defaultItemsPerPage;
         return $this;
     }
+
     /**
      * Getter for $filterModalViewScript
      *
@@ -448,6 +704,7 @@ class ModuleOptions extends AbstractOptions
     {
         return $this->filterModalViewScript;
     }
+
 
     /**
      * Setter for $filterModalViewScript

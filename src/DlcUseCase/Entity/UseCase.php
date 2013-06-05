@@ -196,7 +196,13 @@ class UseCase extends AbstractProvidesHistoryEntity implements DiagrammNodeInter
      */
     public function getExtendedName()
     {
-        $extendedName = $this->getType()->getName();
+        $type = $this->getType();
+
+        if ($type) {
+            $extendedName = $type->getName();
+        } else {
+            $extendedName = '';
+        }
 
         $catTitle = $this->getCategoryTitle();
         if ($catTitle !== null) {

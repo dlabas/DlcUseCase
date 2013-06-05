@@ -1,0 +1,14 @@
+<?php
+$titles = array(
+    array('label' => 'Use Case', 'href' => $this->url('dlcusecase', array())),
+    array('label' => 'Import wiki TXT-files', 'href' => $this->url('dlcusecase/import-wiki-txt-files', array())),
+);
+
+$actions = array();
+
+echo $this->partial('dlc-use-case/partials/header.phtml', array(
+    'title'   => $titles,
+    'image'   => '/img/no_thumbnail.png',
+    'actions' => $actions
+));
+?>

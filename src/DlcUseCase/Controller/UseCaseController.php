@@ -193,4 +193,16 @@ class UseCaseController extends AbstractEntityActionController
         // TODO: Add the redirect parameter here...
         return $this->redirect()->toUrl($this->url()->fromRoute($this->getRouteIdentifierPrefix() . '/show-wiki-template') . ($redirect ? '?redirect='.$redirect : ''));
     }
+
+    /**
+     * Import use cases from doku wiki txt-files action
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function importWikiTxtFilesAction()
+    {
+        $this->getService()->importWikiTxtFiles();
+
+        return array();
+    }
 }
